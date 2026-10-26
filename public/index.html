@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Autos Antioquia - Control de Acceso</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Modal de Ingreso Autorizado -->
+  <div id="modal-autorizado" class="modal-overlay oculto">
+    <div class="modal-card">
+      <div class="modal-icon icon-success">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <h2 class="modal-title title-success">Ingreso Autorizado</h2>
+
+      <div class="modal-body-box success-box">
+        <div class="placa-celda-grid">
+          <div>
+            <span class="modal-label">PLACA</span>
+            <div id="modal-placa-ok" class="badge-placa">ABC-123</div>
+          </div>
+          <div>
+            <span class="modal-label">CELDA ASIGNADA</span>
+            <div id="modal-celda-ok" class="celda-destacada">C-05</div>
+          </div>
+        </div>
+
+        <div class="modal-info-list">
+          <div class="info-row">
+            <span>Tipo de Vehículo</span>
+            <strong id="modal-tipo-ok">Carro</strong>
+          </div>
+          <div class="info-row">
+            <span>Estado Mensualidad</span>
+            <strong id="modal-mensualidad-ok" class="text-success">Vigente (Activa)</strong>
+          </div>
+          <div class="info-row">
+            <span>Hora de Registro</span>
+            <strong id="modal-hora-ok">10:30 AM</strong>
+          </div>
+        </div>
+      </div>
+
+      <p class="modal-footnote">La celda <strong id="modal-celda-footnote">C-05</strong> ha sido registrada como ocupada en el sistema.</p>
+
+      <button id="btn-cerrar-modal-ok" class="btn btn-ingreso btn-modal">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        Confirmar e Imprimir Comprobante
+      </button>
+      <button id="btn-cancelar-modal-ok" class="btn-subtext">Cerrar</button>
+    </div>
+  </div>
+
+  <!-- Modal de Mensualidad Matriculada -->
+  <div id="modal-mensualidad-exitosa" class="modal-overlay oculto">
+    <div class="modal-card">
+      <div class="modal-icon icon-blue">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><polyline points="17 11 19 13 23 9"/></svg>
+      </div>
+      <h2 class="modal-title title-blue">Mensualidad Matriculada</h2>
+
+      <div class="modal-body-box blue-box">
+        <div class="placa-celda-grid">
+          <div>
+            <span class="modal-label">PLACA</span>
+            <div id="modal-placa-mat" class="badge-placa">ECO91H</div>
+          </div>
+          <div>
+            <span class="modal-label">TIPO</span>
+            <strong id="modal-tipo-mat" style="display: block; margin-top: 4px;">Moto</strong>
+          </div>
+        </div>
+
+        <div class="modal-info-list">
+          <div class="info-row">
+            <span>Cliente</span>
+            <strong id="modal-cliente-mat">Juan Grajales</strong>
+          </div>
+          <div class="info-row">
+            <span>Cédula</span>
+            <strong id="modal-cedula-mat">1000405766</strong>
+          </div>
+          <div class="info-row">
+            <span>Estado</span>
+            <strong class="text-success">Mensualidad Activa</strong>
+          </div>
+        </div>
+      </div>
+
+      <button id="btn-cerrar-modal-mat" class="btn btn-blue btn-modal">
+        Entendido / Continuar
+      </button>
+    </div>
+  </div>
+
+  <!-- Modal de Salida Registrada -->
+  <div id="modal-salida-exitosa" class="modal-overlay oculto">
+    <div class="modal-card">
+      <div class="modal-icon icon-warning">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      </div>
+      <h2 class="modal-title title-warning">Salida Registrada</h2>
+
+      <div class="modal-body-box warning-box">
+        <div class="placa-celda-grid">
+          <div>
+            <span class="modal-label">PLACA</span>
+            <div id="modal-placa-salida" class="badge-placa">ECO91H</div>
+          </div>
+          <div>
+            <span class="modal-label">CELDA LIBERADA</span>
+            <div id="modal-celda-salida" class="celda-destacada text-warning">M-01</div>
+          </div>
+        </div>
+
+        <div class="modal-info-list">
+          <div class="info-row">
+            <span>Hora de Salida</span>
+            <strong id="modal-hora-salida">11:15 AM</strong>
+          </div>
+          <div class="info-row">
+            <span>Estado Celda</span>
+            <strong class="text-success">Disponible</strong>
+          </div>
+        </div>
+      </div>
+
+      <button id="btn-cerrar-modal-salida" class="btn btn-salida btn-modal">
+        Cerrar / Continuar
+      </button>
+    </div>
+  </div>
+
+  <!-- Modal de Acceso Denegado -->
+  <div id="modal-denegado" class="modal-overlay oculto">
+    <div class="modal-card">
+      <div class="modal-icon icon-danger">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      </div>
+      <h2 class="modal-title title-danger">Acceso Denegado</h2>
+
+      <div class="modal-body-box danger-box">
+        <div class="placa-celda-grid">
+          <div>
+            <span class="modal-label">PLACA INGRESADA</span>
+            <div id="modal-placa-error" class="badge-placa">XYZ-987</div>
+          </div>
+          <div>
+            <span class="modal-label">TIPO</span>
+            <strong id="modal-tipo-error" style="display: block; margin-top: 4px;">Carro</strong>
+          </div>
+        </div>
+
+        <div style="margin-top: 1rem;">
+          <span class="modal-label">CAUSA DE DENEGACIÓN</span>
+          <p id="modal-causa-error" class="text-danger-sm">La mensualidad asociada a este vehículo no se encuentra activa.</p>
+        </div>
+      </div>
+
+      <div class="instructions-box">
+        <span class="instructions-title">INSTRUCCIONES PARA EL OPERADOR</span>
+        <p>Remitir al usuario a la oficina de administración para actualizar el pago de la mensualidad antes de permitir el ingreso.</p>
+      </div>
+
+      <button id="btn-cerrar-modal-error" class="btn btn-salida btn-modal">
+        Entendido / Regresar
+      </button>
+    </div>
+  </div>
+
+  <!-- Header Navbar Pro Dark -->
+  <header class="navbar">
+    <div class="navbar-container">
+      <div class="brand">
+        <div class="brand-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg>
+        </div>
+        <div class="brand-text">
+          <h1>Autos Antioquia — Control de Acceso</h1>
+          <span>Módulo Operativo de Entrada y Salida</span>
+        </div>
+      </div>
+
+      <div class="navbar-right">
+        <div class="system-status">
+          <span class="status-dot"></span>
+          <span>Servicio Operativo</span>
+        </div>
+        <div class="operator-badge">
+          Portería Principal
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- Tarjetas de Ocupación Superior -->
+    <section class="resumen-grid">
+      <div class="card-resumen">
+        <div class="card-header-info">
+          <span>Carros Ocupados</span>
+          <svg class="icon-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg>
+        </div>
+        <div class="card-counter">
+          <span id="carros-ocupados">0</span><span class="total-capacity">/80</span>
+        </div>
+        <div class="progress-bar-bg">
+          <div id="bar-carros" class="progress-bar-fill" style="width: 0%;"></div>
+        </div>
+        <div class="card-footer-info">
+          <span id="carros-disponibles">80 celdas disponibles</span>
+          <span id="carros-pct">0% ocupado</span>
+        </div>
+      </div>
+
+      <div class="card-resumen">
+        <div class="card-header-info">
+          <span>Motos Ocupadas</span>
+          <svg class="icon-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="18.5" cy="17.5" r="3.5"/><path d="M15 6h2l3 7h-5.8"/><path d="M12 17.5V14l-3-4H3"/></svg>
+        </div>
+        <div class="card-counter">
+          <span id="motos-ocupadas">0</span><span class="total-capacity">/10</span>
+        </div>
+        <div class="progress-bar-bg">
+          <div id="bar-motos" class="progress-bar-fill" style="width: 0%;"></div>
+        </div>
+        <div class="card-footer-info">
+          <span id="motos-disponibles">10 celdas disponibles</span>
+          <span id="motos-pct">0% ocupado</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Panel de Formularios Grid -->
+    <section class="card-panel">
+
+      <!-- Matricular Mensualidad -->
+      <div class="form-box">
+        <h2>Matricular Mensualidad</h2>
+        <form id="form-registro">
+          <label>Cédula del Usuario</label>
+          <input type="number" id="cedula-usuario" placeholder="Ej: 1000405766" min="1" required>
+
+          <label>Nombre Completo</label>
+          <input type="text" id="nombre-usuario" placeholder="Ej: Juan Grajales" required>
+
+          <label>Placa</label>
+          <input type="text" id="placa-registro" placeholder="Ej: ECO91H" maxlength="6" style="text-transform: uppercase;" required>
+
+          <label>Tipo de Vehículo</label>
+          <input type="hidden" id="tipo-registro" value="CARRO">
+          <div class="segmented-control">
+            <button type="button" class="segment-btn active" data-target="tipo-registro" data-value="CARRO">Carro</button>
+            <button type="button" class="segment-btn" data-target="tipo-registro" data-value="MOTO">Moto</button>
+          </div>
+
+          <button type="submit" class="btn btn-blue">
+            Registrar Mensualidad
+          </button>
+        </form>
+      </div>
+
+      <!-- Registrar Entrada -->
+      <div class="form-box">
+        <h2>Registrar Entrada de Vehículo</h2>
+        <form id="form-entrada">
+          <label>Placa</label>
+          <input type="text" id="placa-entrada" placeholder="Ej: AAA111" maxlength="6" style="text-transform: uppercase;" required>
+
+          <label>Tipo de Vehículo</label>
+          <input type="hidden" id="tipo-vehiculo" value="CARRO">
+          <div class="segmented-control">
+            <button type="button" class="segment-btn active" data-target="tipo-vehiculo" data-value="CARRO">Carro</button>
+            <button type="button" class="segment-btn" data-target="tipo-vehiculo" data-value="MOTO">Moto</button>
+          </div>
+
+          <button type="submit" class="btn btn-ingreso">
+            Registrar Entrada
+          </button>
+          <p class="form-hint">El sistema asignará una celda disponible y verificará la mensualidad activa.</p>
+        </form>
+      </div>
+
+      <!-- Registrar Salida -->
+      <div class="form-box">
+        <h2>Registrar Salida de Vehículo</h2>
+        <form id="form-salida">
+          <label>Placa</label>
+          <input type="text" id="placa-salida" placeholder="Ej: AAA111" maxlength="6" style="text-transform: uppercase;" required>
+
+          <button type="submit" class="btn btn-salida">
+            Registrar Salida
+          </button>
+          <p class="form-hint">Al registrar la salida, la celda asignada quedará marcada como disponible automáticamente.</p>
+        </form>
+      </div>
+
+    </section>
+
+    <!-- Tabla de Vehículos -->
+    <section class="dashboard">
+      <div class="table-header">
+        <h3>Vehículos Actualmente Parqueados <span id="total-parqueados-badge" class="badge-count">(0 vehículos)</span></h3>
+      </div>
+
+      <div class="table-responsive">
+        <table class="tabla-vehiculos">
+          <thead>
+            <tr>
+              <th>PLACA</th>
+              <th>TIPO</th>
+              <th>CELDA ASIGNADA</th>
+              <th>FECHA Y HORA DE ENTRADA</th>
+              <th>ESTADO MENSUALIDAD</th>
+              <th>ACCIÓN</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-body"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
