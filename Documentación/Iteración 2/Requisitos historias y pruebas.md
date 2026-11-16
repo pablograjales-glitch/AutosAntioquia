@@ -71,7 +71,7 @@ Actores: Administrador y Operador. Ambos pueden iniciar/cerrar sesión, matricul
 
 ## Pruebas
 
-El formato oficial del profesor es `Plan_Pruebas_Usuarios_Celdas_Autos_Colombia.xlsx` y contiene 30 casos. Úsalo como registro de ejecución; conserva los resultados, observaciones y responsables ya consignados. No se marcan casos adicionales como aprobados sin ejecutar y adjuntar evidencia. Los grupos relevantes incluyen autenticación/sesiones, permisos 401/403, creación y duplicidad de cuentas, hash de clave, alta/búsqueda/edición/borrado protegido de celdas, concurrencia y protección de celdas ocupadas. Las pruebas de Iteración 1 ya registradas se conservan; no se inventan resultados.
+Para esta entrega se resumen 11 casos de prueba seleccionados para los flujos de Iteraciones 1 y 2. Registra resultados, observaciones y responsables reales; no marques casos como aprobados sin ejecutar y adjuntar evidencia. Los grupos relevantes incluyen autenticación/sesiones, permisos 401/403, creación y duplicidad de cuentas, hash de clave, alta/búsqueda/edición/borrado protegido de celdas, concurrencia y protección de celdas ocupadas. Las pruebas de Iteración 1 ya registradas se conservan; no se inventan resultados.
 
 La tabla `Formato ejecución de pruebas.md` sirve como resumen complementario, no sustituye la hoja oficial. Completar fecha, responsable, resultado, evidencia y observaciones solo tras ejecutar cada caso.
 
@@ -85,4 +85,4 @@ La tabla `Formato ejecución de pruebas.md` sirve como resumen complementario, n
 
 ## Conclusión
 
-Iteración 2 agrega control por perfiles, gestión de cuentas y administración integral de celdas mientras mantiene las funciones entregadas en Iteración 1. La autorización del lado del servidor limita cada operación al rol correspondiente; las reglas de integridad protegen mensualidades, historial y ocupación. Para cerrar la entrega académica se deben completar la ejecución documentada de los 30 casos y las evidencias externas de GitHub/YouTube.
+Iteración 2 agrega control por perfiles, gestión de cuentas y administración integral de celdas mientras mantiene las funciones entregadas en Iteración 1. La autorización del lado del servidor limita cada operación al rol correspondiente; las reglas de integridad protegen mensualidades, historial y ocupación. Para cerrar la entrega académica se debe completar la ejecución documentada de los 11 casos resumidos. El repositorio está actualizado en GitHub y el enlace del video se comparte en el comentario de la actividad.

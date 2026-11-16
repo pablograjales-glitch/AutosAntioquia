@@ -1,6 +1,6 @@
 ﻿# Formato resumido de ejecución — Iteración 2
 
-El archivo oficial enviado por el profesor (`Plan_Pruebas_Usuarios_Celdas_Autos_Colombia.xlsx`) es el registro principal y contiene 30 casos. Conserva en él los resultados originales, responsables y observaciones; este cuadro organiza evidencia complementaria para el alcance integrado de I1 e I2. No inventar resultados: actualizar cada fila únicamente después de ejecutar el escenario y guardar captura/log.
+Este resumen presenta 11 casos de prueba para Iteraciones 1 y 2. Registra responsable, fecha, resultado, evidencia y observaciones solo después de ejecutar cada escenario. No inventes resultados ni marques casos como aprobados sin una captura o registro verificable.
 
 | Grupo | Escenarios que deben evidenciarse | Resultado actual |
 |---|---|---|
