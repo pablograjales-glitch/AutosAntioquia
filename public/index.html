@@ -7,6 +7,17 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <section id="login-screen" class="login-screen">
+    <form id="form-login" class="login-card">
+      <div class="brand-icon login-mark" aria-hidden="true">AA</div>
+      <p class="login-eyebrow">Autos Antioquia</p><h1>Iniciar sesi&oacute;n</h1>
+      <p>Ingresa con la cuenta asignada por el administrador.</p>
+      <label for="login-usuario">Usuario</label><input id="login-usuario" autocomplete="username" required maxlength="32">
+      <label for="login-password">Contrase&ntilde;a</label><input id="login-password" type="password" autocomplete="current-password" required maxlength="128">
+      <p id="login-error" class="login-error" role="alert" aria-live="polite"></p>
+      <button class="btn btn-blue" type="submit">Ingresar</button>
+    </form>
+  </section>
 
   <!-- Modal de Ingreso Autorizado -->
   <div id="modal-autorizado" class="modal-overlay oculto">
@@ -140,7 +151,7 @@
       <div class="modal-icon icon-danger">
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
       </div>
-      <h2 class="modal-title title-danger">Acceso Denegado</h2>
+      <h2 id="modal-titulo-error" class="modal-title title-danger">Acceso Denegado</h2>
 
       <div class="modal-body-box danger-box">
         <div class="placa-celda-grid">
@@ -155,14 +166,14 @@
         </div>
 
         <div style="margin-top: 1rem;">
-          <span class="modal-label">CAUSA DE DENEGACIÓN</span>
+          <span id="modal-label-causa-error" class="modal-label">CAUSA</span>
           <p id="modal-causa-error" class="text-danger-sm">La mensualidad asociada a este vehículo no se encuentra activa.</p>
         </div>
       </div>
 
       <div class="instructions-box">
-        <span class="instructions-title">INSTRUCCIONES PARA EL OPERADOR</span>
-        <p>Remitir al usuario a la oficina de administración para actualizar el pago de la mensualidad antes de permitir el ingreso.</p>
+        <span id="modal-titulo-instruccion-error" class="instructions-title">INSTRUCCIONES PARA EL OPERADOR</span>
+        <p id="modal-instruccion-error">Remitir al usuario a la oficina de administración para actualizar el pago de la mensualidad antes de permitir el ingreso.</p>
       </div>
 
       <button id="btn-cerrar-modal-error" class="btn btn-salida btn-modal">
@@ -172,7 +183,7 @@
   </div>
 
   <!-- Header Navbar Pro Dark -->
-  <header class="navbar">
+  <header id="app-header" class="navbar oculto">
     <div class="navbar-container">
       <div class="brand">
         <div class="brand-icon">
@@ -185,6 +196,7 @@
       </div>
 
       <div class="navbar-right">
+        <div class="auth-session-row"><div id="auth-user-info"></div><button id="btn-cerrar-sesion" class="admin-action" type="button">Cerrar sesi&oacute;n</button></div>
         <div class="system-status">
           <span class="status-dot"></span>
           <span>Servicio Operativo</span>
@@ -196,24 +208,25 @@
     </div>
   </header>
 
-  <main class="container">
+  <main id="app-main" class="container oculto">
 
     <!-- Tarjetas de Ocupación Superior -->
-    <section class="resumen-grid">
+    <section class="resumen-grid" data-role="ADMINISTRADOR,OPERADOR">
+      <p id="dashboard-error" class="dashboard-error oculto" role="alert"></p>
       <div class="card-resumen">
         <div class="card-header-info">
           <span>Carros Ocupados</span>
           <svg class="icon-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg>
         </div>
         <div class="card-counter">
-          <span id="carros-ocupados">0</span><span class="total-capacity">/80</span>
+          <span id="carros-ocupados">—</span><span class="total-capacity">/80</span>
         </div>
         <div class="progress-bar-bg">
           <div id="bar-carros" class="progress-bar-fill" style="width: 0%;"></div>
         </div>
         <div class="card-footer-info">
-          <span id="carros-disponibles">80 celdas disponibles</span>
-          <span id="carros-pct">0% ocupado</span>
+          <span id="carros-disponibles">Consultando...</span>
+          <span id="carros-pct">—</span>
         </div>
       </div>
 
@@ -223,23 +236,23 @@
           <svg class="icon-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="18.5" cy="17.5" r="3.5"/><path d="M15 6h2l3 7h-5.8"/><path d="M12 17.5V14l-3-4H3"/></svg>
         </div>
         <div class="card-counter">
-          <span id="motos-ocupadas">0</span><span class="total-capacity">/10</span>
+          <span id="motos-ocupadas">—</span><span class="total-capacity">/10</span>
         </div>
         <div class="progress-bar-bg">
           <div id="bar-motos" class="progress-bar-fill" style="width: 0%;"></div>
         </div>
         <div class="card-footer-info">
-          <span id="motos-disponibles">10 celdas disponibles</span>
-          <span id="motos-pct">0% ocupado</span>
+          <span id="motos-disponibles">Consultando...</span>
+          <span id="motos-pct">—</span>
         </div>
       </div>
     </section>
 
     <!-- Panel de Formularios Grid -->
-    <section class="card-panel">
+    <section class="card-panel" data-role="ADMINISTRADOR,OPERADOR">
 
       <!-- Matricular Mensualidad -->
-      <div class="form-box">
+      <div class="form-box" data-role="ADMINISTRADOR,OPERADOR">
         <h2>Matricular Mensualidad</h2>
         <form id="form-registro">
           <label>Cédula del Usuario</label>
@@ -265,7 +278,7 @@
       </div>
 
       <!-- Registrar Entrada -->
-      <div class="form-box">
+      <div class="form-box" data-role="ADMINISTRADOR,OPERADOR">
         <h2>Registrar Entrada de Vehículo</h2>
         <form id="form-entrada">
           <label>Placa</label>
@@ -286,7 +299,7 @@
       </div>
 
       <!-- Registrar Salida -->
-      <div class="form-box">
+      <div class="form-box" data-role="ADMINISTRADOR,OPERADOR">
         <h2>Registrar Salida de Vehículo</h2>
         <form id="form-salida">
           <label>Placa</label>
@@ -302,7 +315,7 @@
     </section>
 
     <!-- Tabla de Vehículos -->
-    <section class="dashboard">
+    <section class="dashboard" data-role="ADMINISTRADOR,OPERADOR">
       <div class="table-header">
         <h3>Vehículos Actualmente Parqueados <span id="total-parqueados-badge" class="badge-count">(0 vehículos)</span></h3>
       </div>
@@ -323,7 +336,67 @@
         </table>
       </div>
     </section>
+
+    <section class="dashboard admin-section" data-role="ADMINISTRADOR">
+      <div class="table-header"><h3>Gesti&oacute;n de clientes</h3></div>
+      <div class="admin-toolbar client-admin-toolbar">
+        <p class="form-hint">Los clientes se crean al matricular su primer veh&iacute;culo. Aqu&iacute; puedes consultar sus datos, editar el nombre y gestionar su mensualidad.</p>
+        <input id="filtro-clientes" type="search" placeholder="Buscar por c&eacute;dula o nombre" aria-label="Buscar clientes">
+      </div>
+      <div class="table-responsive">
+        <table class="tabla-vehiculos"><thead><tr><th>C&Eacute;DULA</th><th>NOMBRE</th><th>VEH&Iacute;CULOS</th><th>MENSUALIDAD</th><th>VENCE</th><th>ACCIONES</th></tr></thead>
+          <tbody id="clientes-body"><tr><td colspan="6">Cargando clientes...</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="dashboard admin-section" data-role="ADMINISTRADOR">
+      <div class="table-header"><h3>Gestión de celdas</h3><span id="resumen-celdas-admin" class="badge-count"></span></div>
+      <div class="admin-toolbar cell-admin-toolbar"><form id="form-celda-admin" class="admin-create-form entity-create-form cell-create-form">
+        <label class="entity-field">Código de celda<input id="celda-codigo" type="text" placeholder="Ej. M-11 o C-81" maxlength="30" required aria-label="Código de celda"></label>
+        <label class="entity-field">Tipo<select id="celda-tipo" aria-label="Tipo de celda"><option value="CARRO">Carro</option><option value="MOTO">Moto</option></select></label>
+        <button class="btn btn-blue" type="submit">Crear celda</button></form>
+        <input id="filtro-celdas" type="search" placeholder="Buscar codigo o placa" aria-label="Buscar celdas"></div>
+      <div class="table-responsive">
+        <table class="tabla-vehiculos"><thead><tr><th>CELDA</th><th>TIPO</th><th>ESTADO</th><th>VEHÍCULO</th><th>ACCIÓN</th></tr></thead>
+          <tbody id="celdas-body"><tr><td colspan="5">Cargando celdas…</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="dashboard admin-section" data-role="ADMINISTRADOR">
+      <div class="table-header"><h3>Cuentas del sistema</h3><span class="badge-count">Solo el administrador puede crear cuentas</span></div>
+      <div class="admin-toolbar account-admin-toolbar">
+        <form id="form-cuenta-admin" class="admin-create-form account-form">
+          <label class="account-field">Usuario de acceso<input id="cuenta-usuario" type="text" placeholder="Ej. operador01" autocomplete="off" maxlength="32" required></label>
+          <label class="account-field">Nombre completo<input id="cuenta-nombre" type="text" placeholder="Nombre y apellidos" maxlength="120" required></label>
+          <label class="account-field">Contrase&ntilde;a (8 a 128 caracteres)<input id="cuenta-password" type="password" placeholder="Contrase&ntilde;a inicial" autocomplete="new-password" minlength="8" maxlength="128" required></label>
+          <label class="account-field">Perfil de acceso<select id="cuenta-rol"><option value="ADMINISTRADOR">Administrador</option><option value="OPERADOR">Operador</option></select></label>
+          <div id="cuenta-operador-fields" class="operator-fields oculto"><label class="account-field">C&eacute;dula del operador<input id="operador-cedula" type="text" inputmode="numeric" placeholder="Solo n&uacute;meros" maxlength="15"></label></div>
+          <button class="btn btn-blue" type="submit">Crear cuenta</button>
+        </form>
+        <input id="filtro-cuentas" type="search" placeholder="Buscar cuenta o perfil" aria-label="Buscar cuentas">
+      </div>
+      <div class="table-responsive"><table class="tabla-vehiculos"><thead><tr><th>USUARIO</th><th>NOMBRE</th><th>ROL</th><th>PERFIL OPERADOR</th><th>ESTADO</th></tr></thead><tbody id="cuentas-body"><tr><td colspan="5">Cuentas del sistema</td></tr></tbody></table></div>
+    </section>
+    <section class="dashboard operator-section" data-role="OPERADOR">
+      <div class="table-header"><h3>Disponibilidad de celdas</h3><button id="btn-consultar-disponibles" class="admin-action" type="button">Consultar disponibilidad</button></div>
+      <div class="table-responsive"><table class="tabla-vehiculos"><thead><tr><th>CELDA</th><th>TIPO</th></tr></thead><tbody id="disponibles-body"><tr><td colspan="2">Consulta auxiliar; no reserva celdas.</td></tr></tbody></table></div>
+    </section>
   </main>
+  <dialog id="dialogo-confirmar-renovacion" class="confirm-dialog" aria-labelledby="titulo-confirmar-renovacion">
+    <form id="form-confirmar-renovacion">
+      <h2 id="titulo-confirmar-renovacion">Confirmar cambio de mensualidad</h2>
+      <p id="mensaje-confirmar-renovacion">Confirma el cambio con la contraseña de administrador.</p>
+      <label for="password-confirmar-renovacion">Contraseña de administrador</label>
+      <input id="password-confirmar-renovacion" type="password" autocomplete="current-password" maxlength="128" required>
+      <p id="error-confirmar-renovacion" class="dialog-error" role="alert"></p>
+      <div class="dialog-actions">
+        <button id="cancelar-renovacion" class="admin-action" type="button">Cancelar</button>
+        <button id="enviar-renovacion" class="btn btn-blue" type="submit">Confirmar cambio</button>
+      </div>
+    </form>
+  </dialog>
   <script src="app.js"></script>
 </body>
 </html>

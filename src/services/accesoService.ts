@@ -1,8 +1,16 @@
 import { pool } from '../config/db';
 import { TipoVehiculo, RespuestaAcceso } from '../models/types';
 
+function normalizarFechaSql(valor: unknown): string | null {
+  if (valor instanceof Date) {
+    return Number.isNaN(valor.getTime()) ? null : valor.toISOString().slice(0, 10);
+  }
+  if (typeof valor !== 'string') return null;
+  return valor.trim().match(/^\d{4}-\d{2}-\d{2}/)?.[0] ?? null;
+}
+
 export class AccesoService {
-  public async registrarEntrada(placaBruta: string, tipoVehiculo: TipoVehiculo): Promise<RespuestaAcceso> {
+  public async registrarEntrada(placaBruta: string, tipoVehiculo: TipoVehiculo, idCuenta: string): Promise<RespuestaAcceso> {
     // 0. Estandarización de la placa (Limpieza de espacios y mayúsculas)
     const placa = placaBruta.trim().toUpperCase();
 
@@ -14,7 +22,7 @@ export class AccesoService {
     try {
     await client.query('BEGIN');
     const queryVehiculo = `
-      SELECT v.placa, u.mensualidad_activa 
+      SELECT v.placa, u.mensualidad_activa, u.fecha_vencimiento_mensualidad
       FROM vehiculo v
       JOIN usuario u ON v.id_usuario = u.id_usuario
       WHERE v.placa = $1
@@ -26,8 +34,21 @@ export class AccesoService {
       throw new Error(`El vehículo con placa ${placa} no se encuentra registrado en el sistema.`);
     }
 
-    if (!resVehiculo.rows[0].mensualidad_activa) {
-      throw new Error(`Acceso Denegado: La mensualidad para la placa ${placa} está VENCIDA.`);
+    const mensualidadActiva = resVehiculo.rows[0].mensualidad_activa;
+    const vencimiento = resVehiculo.rows[0].fecha_vencimiento_mensualidad;
+    const fechaHoy = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Bogota' }).format(new Date());
+    const fechaVencimiento = normalizarFechaSql(vencimiento);
+    const fecha = fechaVencimiento
+      ? `${fechaVencimiento.slice(8, 10)}/${fechaVencimiento.slice(5, 7)}/${fechaVencimiento.slice(0, 4)}`
+      : 'no registrada';
+    if (!mensualidadActiva) {
+      throw new Error(`Acceso Denegado: La mensualidad para la placa ${placa} está inactiva. Fecha de vencimiento registrada: ${fecha}.`);
+    }
+    if (!fechaVencimiento) {
+      throw new Error(`Acceso Denegado: La mensualidad para la placa ${placa} no tiene una fecha de vencimiento válida.`);
+    }
+    if (fechaVencimiento < fechaHoy) {
+      throw new Error(`Acceso Denegado: La mensualidad para la placa ${placa} está vencida. Fecha de vencimiento: ${fecha}.`);
     }
 
     // 🔴 VALIDACIÓN DE NEGOCIO: Evitar el doble ingreso si el vehículo ya está adentro
@@ -54,11 +75,15 @@ export class AccesoService {
       throw new Error(`Acceso Denegado: Capacidad máxima de ${tipoVehiculo.toLowerCase()}s alcanzada (${limiteMaximo}/${limiteMaximo}).`);
     }
 
-    // 3. Buscar la primera celda disponible
+    // 3. Seleccionar aleatoriamente una celda disponible
     const queryCeldaLibre = `
       SELECT id_celda, numero_celda FROM celda 
-      WHERE tipo_vehiculo = $1 AND estado = 'DISPONIBLE' 
-      ORDER BY id_celda ASC LIMIT 1 FOR UPDATE SKIP LOCKED;
+      WHERE tipo_vehiculo = $1 AND estado = 'DISPONIBLE'
+        AND NOT EXISTS (
+          SELECT 1 FROM registro_acceso ra
+          WHERE ra.id_celda = celda.id_celda AND ra.fecha_hora_salida IS NULL
+        )
+      ORDER BY random() LIMIT 1 FOR UPDATE SKIP LOCKED;
     `;
     const resCelda = await client.query(queryCeldaLibre, [tipoVehiculo]);
 
@@ -71,8 +96,8 @@ export class AccesoService {
     // 4. Cambiar estado de celda a 'OCUPADA' e insertar el registro de acceso
     await client.query(`UPDATE celda SET estado = 'OCUPADA' WHERE id_celda = $1;`, [celdaAsignada.id_celda]);
     await client.query(
-      `INSERT INTO registro_acceso (placa, id_celda) VALUES ($1, $2);`,
-      [placa, celdaAsignada.id_celda]
+      `INSERT INTO registro_acceso (placa, id_celda, id_cuenta_entrada) VALUES ($1, $2, $3);`,
+      [placa, celdaAsignada.id_celda, idCuenta]
     );
     await client.query('COMMIT');
 
@@ -97,8 +122,11 @@ export class AccesoService {
   // ==========================================
   // MÉTODO DE SALIDA DE VEHÍCULO
   // ==========================================
-  public async registrarSalida(placaBruta: string): Promise<RespuestaAcceso> {
+  public async registrarSalida(placaBruta: string, idCuenta: string): Promise<RespuestaAcceso> {
     const placa = placaBruta.trim().toUpperCase();
+    const client = await pool.connect();
+    try {
+    await client.query('BEGIN');
 
     // 1. Buscar si el vehículo tiene un ingreso activo (sin fecha de salida)
     const queryIngreso = `
@@ -108,7 +136,7 @@ export class AccesoService {
       JOIN vehiculo v ON ra.placa = v.placa
       WHERE ra.placa = $1 AND ra.fecha_hora_salida IS NULL;
     `;
-    const resIngreso = await pool.query(queryIngreso, [placa]);
+    const resIngreso = await client.query(`${queryIngreso.replace(';', '')} FOR UPDATE OF ra, c;`, [placa]);
 
     if (resIngreso.rows.length === 0) {
       throw new Error(`El vehículo con placa ${placa} no registra un ingreso activo en el parqueadero.`);
@@ -120,10 +148,10 @@ export class AccesoService {
     // 2. Registrar la hora de salida en la tabla registro_acceso
     const queryActualizarSalida = `
       UPDATE registro_acceso
-      SET fecha_hora_salida = $1
+      SET fecha_hora_salida = $1, id_cuenta_salida = $3
       WHERE id_registro = $2;
     `;
-    await pool.query(queryActualizarSalida, [fechaHoraSalida, id_registro]);
+    await client.query(queryActualizarSalida, [fechaHoraSalida, id_registro, idCuenta]);
 
     // 3. Liberar la celda en la tabla celda (Volver a ponerla DISPONIBLE)
     const queryLiberarCelda = `
@@ -131,7 +159,8 @@ export class AccesoService {
       SET estado = 'DISPONIBLE'
       WHERE id_celda = $1;
     `;
-    await pool.query(queryLiberarCelda, [id_celda]);
+    await client.query(queryLiberarCelda, [id_celda]);
+    await client.query('COMMIT');
 
     return {
       mensaje: '¡Salida Registrada Exitosamente!',
@@ -141,19 +170,26 @@ export class AccesoService {
       fechaHoraEntrada: fecha_hora_entrada,
       fechaHoraSalida
     };
+    } catch (error) {
+      await client.query('ROLLBACK');
+      throw error;
+    } finally {
+      client.release();
+    }
   }
 
   // Consultar estado de ocupación y vehículos dentro del parqueadero
   public async obtenerOcupacion() {
     // 1. Contar celdas ocupadas por tipo
     const queryConteo = `
-      SELECT 
-        tipo_vehiculo,
-        COUNT(CASE WHEN estado = 'OCUPADA' THEN 1 END) as ocupadas,
-        COUNT(CASE WHEN estado = 'DISPONIBLE' THEN 1 END) as disponibles,
-        COUNT(*) as total
-      FROM celda
-      GROUP BY tipo_vehiculo;
+      SELECT
+        c.tipo_vehiculo,
+        COUNT(*) FILTER (WHERE c.estado = 'OCUPADA' OR ra.id_registro IS NOT NULL) AS ocupadas,
+        COUNT(*) FILTER (WHERE c.estado = 'DISPONIBLE' AND ra.id_registro IS NULL) AS disponibles,
+        COUNT(*) AS total
+      FROM celda c
+      LEFT JOIN registro_acceso ra ON ra.id_celda = c.id_celda AND ra.fecha_hora_salida IS NULL
+      GROUP BY c.tipo_vehiculo;
     `;
     const resConteo = await pool.query(queryConteo);
 
@@ -180,10 +216,11 @@ export class AccesoService {
 
   // Registrar nuevo usuario y su vehículo con mensualidad ACTIVA
   public async registrarVehiculoMensualidad(datos: {
-    cedula: number;
+    cedula: string;
     nombre: string;
     placa: string;
     tipoVehiculo: 'CARRO' | 'MOTO';
+    idCuenta: string;
   }) {
     const placa = datos.placa.trim().toUpperCase();
 
@@ -195,7 +232,8 @@ export class AccesoService {
     await client.query('BEGIN');
 
     // Serializa matrículas simultáneas de una misma placa, incluso si todavía no existe una fila que bloquear.
-    await client.query('SELECT pg_advisory_xact_lock(hashtext($1))', [placa]);
+    await client.query('SELECT pg_advisory_xact_lock(hashtext($1))', [`cedula:${datos.cedula}`]);
+    await client.query('SELECT pg_advisory_xact_lock(hashtext($1))', [`placa:${placa}`]);
 
     // Una placa solo se puede matricular una vez.
     const vehiculoExistente = await client.query(
@@ -206,28 +244,42 @@ export class AccesoService {
       throw new Error(`La placa ${placa} ya está matriculada.`);
     }
 
-    // 1. Asignamos $1 para id_usuario, $2 para cedula y $3 para nombre
-    const queryUsuario = `
-      INSERT INTO usuario (id_usuario, cedula, nombre, mensualidad_activa)
-      VALUES ($1, $2, $3, true)
-      ON CONFLICT (id_usuario) DO UPDATE 
-      SET nombre = $3, mensualidad_activa = true
-      RETURNING id_usuario;
-    `;
-    await client.query(queryUsuario, [datos.cedula, datos.cedula, datos.nombre]);
+    // 1. Buscar o crear el cliente. id_usuario lo genera la secuencia de la tabla.
+    const usuarioExistente = await client.query(`
+      SELECT id_usuario, nombre, mensualidad_activa,
+             fecha_vencimiento_mensualidad >= CURRENT_DATE AS mensualidad_vigente
+      FROM usuario WHERE cedula = $1 FOR UPDATE;
+    `, [datos.cedula]);
+    let propietario = datos.nombre.trim();
+    let idUsuario: number;
+    if (usuarioExistente.rows.length) {
+      const usuario = usuarioExistente.rows[0];
+      if (!usuario.mensualidad_activa || !usuario.mensualidad_vigente) {
+        throw new Error('El cliente ya existe con mensualidad inactiva o vencida. Solo el administrador puede renovarla antes de matricular otro vehículo.');
+      }
+      propietario = usuario.nombre;
+      idUsuario = usuario.id_usuario;
+    } else {
+      const nuevoUsuario = await client.query(`
+        INSERT INTO usuario (cedula, nombre, mensualidad_activa, fecha_vencimiento_mensualidad)
+        VALUES ($1, $2, true, CURRENT_DATE + INTERVAL '30 days')
+        RETURNING id_usuario;
+      `, [datos.cedula, propietario]);
+      idUsuario = nuevoUsuario.rows[0].id_usuario;
+    }
 
     // 2. Insertar o actualizar el vehículo asociando el usuario
     const queryVehiculo = `
-      INSERT INTO vehiculo (placa, tipo_vehiculo, id_usuario)
-      VALUES ($1, $2, $3)
+      INSERT INTO vehiculo (placa, tipo_vehiculo, id_usuario, matriculado_por_cuenta)
+      VALUES ($1, $2, $3, $4)
     `;
-    await client.query(queryVehiculo, [placa, datos.tipoVehiculo, datos.cedula]);
+    await client.query(queryVehiculo, [placa, datos.tipoVehiculo, idUsuario, datos.idCuenta]);
     await client.query('COMMIT');
 
     return {
       mensaje: `¡Vehículo ${placa} y cliente ${datos.nombre} matriculados exitosamente con mensualidad ACTIVA!`,
       placa,
-      propietario: datos.nombre
+      propietario
     };
     } catch (error) {
       await client.query('ROLLBACK');
@@ -244,21 +296,14 @@ export class AccesoService {
   public validarTipoPlaca(placa: string, tipoVehiculo: string): void {
     const placaLimpia = placa.trim().toUpperCase();
 
-    // Regla 1: Longitud máxima de 6 caracteres
-    if (placaLimpia.length > 6) {
-      throw new Error('La placa no puede tener más de 6 caracteres.');
-    }
-
-    // Regla 2: Formato según el tipo de vehículo
-    const ultimoCaracter = placaLimpia.slice(-1);
-    const esNumero = !isNaN(Number(ultimoCaracter));
-
-    if (tipoVehiculo === 'CARRO' && !esNumero) {
-      throw new Error('La placa de un carro debe terminar en un número (Ej: AAA123).');
-    }
-
-    if (tipoVehiculo === 'MOTO' && esNumero) {
-      throw new Error('La placa de una moto debe terminar en una letra (Ej: BBB05F).');
-    }
+    const formatos: Record<string, RegExp> = {
+      CARRO: /^[A-Z]{3}[0-9]{3}$/,
+      MOTO: /^[A-Z]{3}[0-9]{2}[A-Z]$/
+    };
+    if (!formatos[tipoVehiculo] || !formatos[tipoVehiculo].test(placaLimpia)) {
+      throw new Error(tipoVehiculo === 'MOTO'
+        ? 'La placa de una moto debe tener el formato AAA00A (Ej: BBB05F).'
+        : 'La placa de un carro debe tener el formato AAA000 (Ej: AAA123).');
+       }
   }
 }

@@ -2166,7 +2166,8 @@
 								},
 								"reference": {
 									"$ref": "AAAAAAGhV0jWS3bdksI="
-								}
+								},
+								"multiplicity": "1"
 							},
 							"end2": {
 								"_type": "UMLAssociationEnd",
@@ -2176,7 +2177,8 @@
 								},
 								"reference": {
 									"$ref": "AAAAAAGhV1HXjXc12dI="
-								}
+								},
+								"multiplicity": "0..*"
 							}
 						}
 					],
@@ -2230,6 +2232,16 @@
 							"name": "mensualidadActiva",
 							"visibility": "private",
 							"type": "boolean"
+						},
+						{
+							"_type": "UMLAttribute",
+							"_id": "codexFechaVencimiento01",
+							"_parent": {
+								"$ref": "AAAAAAGhV0jWS3bdksI="
+							},
+							"name": "fechaVencimientoMensualidad",
+							"type": "Date",
+							"visibility": "private"
 						}
 					],
 					"operations": [
@@ -2276,7 +2288,8 @@
 								},
 								"reference": {
 									"$ref": "AAAAAAGhV1HXjXc12dI="
-								}
+								},
+								"multiplicity": "1"
 							},
 							"end2": {
 								"_type": "UMLAssociationEnd",
@@ -2286,7 +2299,8 @@
 								},
 								"reference": {
 									"$ref": "AAAAAAGhV1SrzHfg8+4="
-								}
+								},
+								"multiplicity": "0..*"
 							}
 						}
 					],
@@ -2366,7 +2380,8 @@
 								},
 								"reference": {
 									"$ref": "AAAAAAGhV1MOe3eD8IA="
-								}
+								},
+								"multiplicity": "1"
 							},
 							"end2": {
 								"_type": "UMLAssociationEnd",
@@ -2376,7 +2391,8 @@
 								},
 								"reference": {
 									"$ref": "AAAAAAGhV1SrzHfg8+4="
-								}
+								},
+								"multiplicity": "0..*"
 							}
 						}
 					],

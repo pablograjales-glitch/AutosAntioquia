@@ -292,7 +292,7 @@
 											"top": 262,
 											"width": 135,
 											"height": 13,
-											"text": "repositories"
+											"text": "config"
 										},
 										{
 											"_type": "LabelView",
@@ -806,7 +806,7 @@
 					"_parent": {
 						"$ref": "AAAAAAGhV10ZFfAYd7Q="
 					},
-					"name": "repositories",
+					"name": "config",
 					"ownedElements": [
 						{
 							"_type": "UMLDependency",

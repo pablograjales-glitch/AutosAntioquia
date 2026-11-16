@@ -4,7 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "tsx src/app.ts",
+    "dev": "tsx watch src/app.ts",
+    "create-admin": "tsx src/scripts/createAdmin.ts",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "test:e2e": "playwright test",
+    "test:e2e:practico": "playwright test --grep P- --workers=1",
+    "test:e2e:headed": "playwright test --headed"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +23,7 @@
     "pg": "^8.23.1"
   },
   "devDependencies": {
+    "@playwright/test": "^1.65.1",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/node": "^26.6.5",

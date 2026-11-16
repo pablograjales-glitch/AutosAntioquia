@@ -4,6 +4,8 @@
 node_modules/
 dist/
 coverage/
+test-results/
+playwright-report/
 *.log
 npm-debug.log*
 .DS_Store

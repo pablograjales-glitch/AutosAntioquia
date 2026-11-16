@@ -1801,105 +1801,6 @@
 							"propertyLabel": {
 								"$ref": "AAAAAAGhV0PSYwV++4o="
 							}
-						},
-						{
-							"_type": "UMLIncludeView",
-							"_id": "AAAAAAGhV0R9xAgDNAw=",
-							"_parent": {
-								"$ref": "AAAAAAGhVzTlDc3ViZQ="
-							},
-							"model": {
-								"$ref": "AAAAAAGhV0R9xAgBpCA="
-							},
-							"subViews": [
-								{
-									"_type": "EdgeLabelView",
-									"_id": "AAAAAAGhV0R9xAgESxw=",
-									"_parent": {
-										"$ref": "AAAAAAGhV0R9xAgDNAw="
-									},
-									"model": {
-										"$ref": "AAAAAAGhV0R9xAgBpCA="
-									},
-									"visible": false,
-									"font": "Arial;13;0",
-									"parentStyle": false,
-									"left": 992,
-									"top": 349,
-									"height": 13,
-									"alpha": 1.5707963267948966,
-									"distance": 15,
-									"hostEdge": {
-										"$ref": "AAAAAAGhV0R9xAgDNAw="
-									},
-									"edgePosition": 1
-								},
-								{
-									"_type": "EdgeLabelView",
-									"_id": "AAAAAAGhV0R9xAgFwDI=",
-									"_parent": {
-										"$ref": "AAAAAAGhV0R9xAgDNAw="
-									},
-									"model": {
-										"$ref": "AAAAAAGhV0R9xAgBpCA="
-									},
-									"font": "Arial;13;0",
-									"parentStyle": false,
-									"left": 956,
-									"top": 337,
-									"width": 55.65625,
-									"height": 13,
-									"alpha": 1.5707963267948966,
-									"distance": 30,
-									"hostEdge": {
-										"$ref": "AAAAAAGhV0R9xAgDNAw="
-									},
-									"edgePosition": 1,
-									"text": "«include»"
-								},
-								{
-									"_type": "EdgeLabelView",
-									"_id": "AAAAAAGhV0R9xAgGLWA=",
-									"_parent": {
-										"$ref": "AAAAAAGhV0R9xAgDNAw="
-									},
-									"model": {
-										"$ref": "AAAAAAGhV0R9xAgBpCA="
-									},
-									"visible": false,
-									"font": "Arial;13;0",
-									"parentStyle": false,
-									"left": 1009,
-									"top": 374,
-									"height": 13,
-									"alpha": -1.5707963267948966,
-									"distance": 15,
-									"hostEdge": {
-										"$ref": "AAAAAAGhV0R9xAgDNAw="
-									},
-									"edgePosition": 1
-								}
-							],
-							"font": "Arial;13;0",
-							"parentStyle": false,
-							"head": {
-								"$ref": "AAAAAAGhVz5pG9UGVOg="
-							},
-							"tail": {
-								"$ref": "AAAAAAGhVz9AFNU45WM="
-							},
-							"lineStyle": 1,
-							"points": "958:399;1045:337",
-							"showVisibility": true,
-							"nameLabel": {
-								"$ref": "AAAAAAGhV0R9xAgESxw="
-							},
-							"stereotypeLabel": {
-								"$ref": "AAAAAAGhV0R9xAgFwDI="
-							},
-							"propertyLabel": {
-								"$ref": "AAAAAAGhV0R9xAgGLWA="
-							}
 						}
 					]
 				},
@@ -2028,21 +1929,7 @@
 						"$ref": "AAAAAAGhVzTlDc3UCU0="
 					},
 					"name": "Consultar Estado Celda",
-					"ownedElements": [
-						{
-							"_type": "UMLInclude",
-							"_id": "AAAAAAGhV0P4OwakpTA=",
-							"_parent": {
-								"$ref": "AAAAAAGhVz5pG9UEFtM="
-							},
-							"source": {
-								"$ref": "AAAAAAGhVz5pG9UEFtM="
-							},
-							"target": {
-								"$ref": "AAAAAAGhVz9AFNU2eRw="
-							}
-						}
-					]
+					"ownedElements": []
 				},
 				{
 					"_type": "UMLUseCase",
@@ -2051,21 +1938,7 @@
 						"$ref": "AAAAAAGhVzTlDc3UCU0="
 					},
 					"name": "Registrar Salida Vehículo",
-					"ownedElements": [
-						{
-							"_type": "UMLInclude",
-							"_id": "AAAAAAGhV0R9xAgBpCA=",
-							"_parent": {
-								"$ref": "AAAAAAGhVz9AFNU2eRw="
-							},
-							"source": {
-								"$ref": "AAAAAAGhVz9AFNU2eRw="
-							},
-							"target": {
-								"$ref": "AAAAAAGhVz5pG9UEFtM="
-							}
-						}
-					]
+					"ownedElements": []
 				}
 			]
 		}

@@ -1,0 +1,188 @@
+{
+	"_type": "Project",
+	"_id": "AAAAAAFF+h6SjaM2Hec=",
+	"name": "Untitled",
+	"ownedElements": [
+		{
+			"_type": "UMLModel",
+			"_id": "AAAAAAFF+qBWK6M3Z8Y=",
+			"_parent": {
+				"$ref": "AAAAAAFF+h6SjaM2Hec="
+			},
+			"name": "Model",
+			"ownedElements": [
+				{
+					"_type": "UMLClassDiagram",
+					"_id": "AAAAAAFF+qBtyKM79qY=",
+					"_parent": {
+						"$ref": "AAAAAAFF+qBWK6M3Z8Y="
+					},
+					"name": "Main",
+					"defaultDiagram": true
+				}
+			]
+		},
+		{
+			"_type": "UMLModel",
+			"_id": "crZQyOgQRNOCsbXKGgsoXA==",
+			"_parent": {
+				"$ref": "AAAAAAFF+h6SjaM2Hec="
+			},
+			"name": "Secuencias Iteraciones 1 y 2",
+			"ownedElements": [
+				{
+					"_type": "UMLCollaboration",
+					"_id": "jQkQ4yN4Hm84T8QKgn/FyQ==",
+					"_parent": {
+						"$ref": "crZQyOgQRNOCsbXKGgsoXA=="
+					},
+					"name": "Flujos del parqueadero",
+					"ownedElements": [
+						{
+							"_type": "UMLInteraction",
+							"_id": "nXYWZYWcU7ahtj0GDoIupQ==",
+							"_parent": {
+								"$ref": "jQkQ4yN4Hm84T8QKgn/FyQ=="
+							},
+							"name": "I1 - Registrar entrada",
+							"ownedElements": [
+								{
+									"_type": "UMLSequenceDiagram",
+									"_id": "PBMvkWNMRLeJKqYuX/TDEg==",
+									"_parent": {
+										"$ref": "nXYWZYWcU7ahtj0GDoIupQ=="
+									},
+									"name": "I1 - Registrar entrada",
+									"ownedViews": [
+										{
+											"_type": "UMLTextView",
+											"_id": "TYB8tW7SQ1SC2xMVyAn8+w==",
+											"_parent": {
+												"$ref": "PBMvkWNMRLeJKqYuX/TDEg=="
+											},
+											"font": "Consolas;11;0",
+											"parentStyle": false,
+											"left": 35,
+											"top": 50,
+											"width": 1350,
+											"height": 610,
+											"text": "Administrador / Operador | Interfaz | Auth/Rol | AccesoController | AccesoService | PostgreSQL\n        |                 |       |              |                 |\n        |-- placa/tipo -->|       |              |                 |\n        |                 |-- POST entrada --->|                 |\n        |                 |       |-- autoriza ->|                 |\n        |                 |       |              |-- validar ------>|\n        |                 |       |              |-- BEGIN -------->|\n        |                 |       |              |-- valida placa, mensualidad y cupo -->|\n        |                 |       |              |-- elige celda compatible aleatoria -->|\n        |                 |       |              |-- ocupa celda + registra actor/entrada ->|\n        |                 |       |              |-- COMMIT ------->|\n        |<-- celda asignada y confirmacion ------|                 |\n        |                 |                      rollback si falla |\n"
+										}
+									],
+									"defaultDiagram": true
+								}
+							],
+							"participants": []
+						},
+						{
+							"_type": "UMLInteraction",
+							"_id": "CcLSIwjPnUb3uJ96OMJzww==",
+							"_parent": {
+								"$ref": "jQkQ4yN4Hm84T8QKgn/FyQ=="
+							},
+							"name": "I1 - Registrar salida atomica",
+							"ownedElements": [
+								{
+									"_type": "UMLSequenceDiagram",
+									"_id": "tSrGRduPT9GW8Za0nGENyQ==",
+									"_parent": {
+										"$ref": "CcLSIwjPnUb3uJ96OMJzww=="
+									},
+									"name": "I1 - Registrar salida atomica",
+									"ownedViews": [
+										{
+											"_type": "UMLTextView",
+											"_id": "aOncaAq0QIOAV0lr3oDrgQ==",
+											"_parent": {
+												"$ref": "tSrGRduPT9GW8Za0nGENyQ=="
+											},
+											"font": "Consolas;11;0",
+											"parentStyle": false,
+											"left": 35,
+											"top": 50,
+											"width": 1350,
+											"height": 610,
+											"text": "Administrador / Operador | Interfaz | Auth/Rol | AccesoController | AccesoService | PostgreSQL\n        |                 |       |              |                 |\n        |-- placa ------->|       |              |                 |\n        |                 |-- POST salida ----->|                 |\n        |                 |       |-- autoriza ->|                 |\n        |                 |       |              |-- BEGIN; bloquea registro/celda activos -->|\n        |                 |       |              |-- cierra registro ------------------------>|\n        |                 |       |              |-- libera celda -------------------------->|\n        |                 |       |              |-- COMMIT (ambos cambios) ---------------->|\n        |                 |       |              |-- ROLLBACK si falla cualquier paso ------>|\n        |<-- resultado ---------------------------|                 |\n"
+										}
+									]
+								}
+							],
+							"participants": []
+						},
+						{
+							"_type": "UMLInteraction",
+							"_id": "SFXg1BTdLb7J8Vk/rYMQ7A==",
+							"_parent": {
+								"$ref": "jQkQ4yN4Hm84T8QKgn/FyQ=="
+							},
+							"name": "I2 - Gestionar usuarios y mensualidad",
+							"ownedElements": [
+								{
+									"_type": "UMLSequenceDiagram",
+									"_id": "LKFqwaznQFabgfq4EqNA3Q==",
+									"_parent": {
+										"$ref": "SFXg1BTdLb7J8Vk/rYMQ7A=="
+									},
+									"name": "I2 - Gestionar usuarios y mensualidad",
+									"ownedViews": [
+										{
+											"_type": "UMLTextView",
+											"_id": "ufewze3jQVuU1jwM12FiTg==",
+											"_parent": {
+												"$ref": "LKFqwaznQFabgfq4EqNA3Q=="
+											},
+											"font": "Consolas;11;0",
+											"parentStyle": false,
+											"left": 35,
+											"top": 50,
+											"width": 1350,
+											"height": 610,
+											"text": "Administrador / Operador | Interfaz | Auth/Rol | AccesoController | GestionService | PostgreSQL\n        |                 |       |              |                 |\n        |-- cedula/nombre/placa/tipo ------------>|                 |\n        |                 |-- POST /api/vehiculo ->|                |\n        |                 |       |-- valida ambos roles -->|       |\n        |                 |       |              |-- crear cliente si falta + vehiculo -->|\n        |                 |       |              |-- crea mensualidad y vencimiento ----->|\n        |<-- matricula confirmada ----------------|                 |\nAdministrador           |-- consulta/edita cliente o solicita renovar/desactivar ------->|\n        |                 |-- PATCH mensualidad -->|                 |\n        |                 |       |-- solo ADMIN; pide clave ------->|\n        |                 |       |              |-- valida clave y cambia estado/vence ->|\n        |<-- confirmacion o rechazo --------------|                 |\n"
+										}
+									]
+								}
+							],
+							"participants": []
+						},
+						{
+							"_type": "UMLInteraction",
+							"_id": "DR92UT+AvpVMGGvm1ZK7XA==",
+							"_parent": {
+								"$ref": "jQkQ4yN4Hm84T8QKgn/FyQ=="
+							},
+							"name": "I2 - Gestionar celdas",
+							"ownedElements": [
+								{
+									"_type": "UMLSequenceDiagram",
+									"_id": "S0FdjTMIR6Oe9/Hxuky6ag==",
+									"_parent": {
+										"$ref": "DR92UT+AvpVMGGvm1ZK7XA=="
+									},
+									"name": "I2 - Gestionar celdas",
+									"ownedViews": [
+										{
+											"_type": "UMLTextView",
+											"_id": "Q4czv61NSIWwKUHGRNDLpQ==",
+											"_parent": {
+												"$ref": "S0FdjTMIR6Oe9/Hxuky6ag=="
+											},
+											"font": "Consolas;11;0",
+											"parentStyle": false,
+											"left": 35,
+											"top": 50,
+											"width": 1350,
+											"height": 610,
+											"text": "Administrador | Interfaz | Auth/Rol | AccesoController | GestionService | PostgreSQL\n      |             |       |                |                |\n      |-- crear/editar/consultar celda ------->|                |\n      |             |-- /api/celdas ---------->|                |\n      |             |       |-- exige ADMIN -->|                |\n      |             |       |                |-- valida tipo, codigo y limite 80/10 -->|\n      |             |       |                |-- valida ocupacion e historial ------->|\n      |             |       |                |-- guarda cambio autorizado ----------->|\n      |<-- estado actualizado o motivo del rechazo -------------|\n"
+										}
+									]
+								}
+							],
+							"participants": []
+						}
+					]
+				}
+			]
+		}
+	],
+	"documentVersion": 1
+}

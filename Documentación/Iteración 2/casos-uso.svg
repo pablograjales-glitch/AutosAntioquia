@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="470" viewBox="0 0 900 470">
+<rect width="900" height="470" fill="#fff"/><rect x="190" y="20" width="690" height="430" rx="10" fill="#f8fafc" stroke="#475569"/><text x="535" y="48" text-anchor="middle" font-family="Arial" font-size="18" font-weight="bold" fill="#10264b">Sistema Autos Antioquia</text>
+<g fill="white" stroke="#2563eb" stroke-width="2"><ellipse cx="385" cy="110" rx="145" ry="32"/><ellipse cx="680" cy="110" rx="145" ry="32"/><ellipse cx="385" cy="205" rx="145" ry="32"/><ellipse cx="680" cy="205" rx="145" ry="32"/><ellipse cx="535" cy="325" rx="165" ry="38"/></g>
+<g font-family="Arial" font-size="14" text-anchor="middle" fill="#172033"><text x="385" y="115">Crear usuario</text><text x="680" y="115">Consultar y buscar usuarios</text><text x="385" y="210">Actualizar datos y mensualidad</text><text x="680" y="210">Consultar inventario de celdas</text><text x="535" y="330">Gestionar mantenimiento de celda</text></g>
+<g stroke="#64748b" stroke-width="1.5"><path d="M95 220L240 110M95 220L535 110M95 220L240 205M95 220L535 205M95 220L370 325"/></g>
+<g stroke="#172033" stroke-width="3" fill="none"><circle cx="95" cy="170" r="15"/><path d="M95 185v60m-25-34h50m-25 34-24 35m24-35 24 35"/></g><text x="95" y="390" text-anchor="middle" font-family="Arial" font-size="14">Administrador</text></svg>
