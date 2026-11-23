@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 976 774" font-family="Arial, sans-serif" fill="#173652" role="img" aria-labelledby="titulo">
+<title id="titulo">Secuencia integrada de autenticación, pagos y control de acceso</title>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#2b4a68"/></marker></defs>
+<rect width="976" height="774" fill="#fff"/>
+<rect x="18" y="80" width="940" height="190" rx="7" fill="#f4f8fc" stroke="#a9bbcf"/>
+<text x="31" y="98" font-size="15" font-weight="700">I2 · Autenticación y gestión</text>
+<rect x="18" y="281" width="940" height="268" rx="7" fill="#f4f8fc" stroke="#a9bbcf"/>
+<text x="31" y="299" font-size="15" font-weight="700">I3 · Cobro y resultado en modo demo</text>
+<rect x="18" y="560" width="940" height="190" rx="7" fill="#f4f8fc" stroke="#a9bbcf"/>
+<text x="31" y="578" font-size="15" font-weight="700">I1 · Control de acceso con la vigencia</text>
+<rect x="28" y="19" width="152" height="32" rx="5" fill="#e4edf7" stroke="#7693b1"/>
+<text x="104" y="39" text-anchor="middle" font-size="12">Personal autorizado</text>
+<path d="M104 51V759" stroke="#849bb0" stroke-dasharray="5 5"/>
+<rect x="206" y="19" width="152" height="32" rx="5" fill="#e4edf7" stroke="#7693b1"/>
+<text x="282" y="39" text-anchor="middle" font-size="12">Interfaz web</text>
+<path d="M282 51V759" stroke="#849bb0" stroke-dasharray="5 5"/>
+<rect x="406" y="19" width="152" height="32" rx="5" fill="#e4edf7" stroke="#7693b1"/>
+<text x="482" y="39" text-anchor="middle" font-size="12">Controladores y rutas</text>
+<path d="M482 51V759" stroke="#849bb0" stroke-dasharray="5 5"/>
+<rect x="605" y="19" width="152" height="32" rx="5" fill="#e4edf7" stroke="#7693b1"/>
+<text x="681" y="39" text-anchor="middle" font-size="12">Servicios</text>
+<path d="M681 51V759" stroke="#849bb0" stroke-dasharray="5 5"/>
+<rect x="786" y="19" width="152" height="32" rx="5" fill="#e4edf7" stroke="#7693b1"/>
+<text x="862" y="39" text-anchor="middle" font-size="12">PostgreSQL</text>
+<path d="M862 51V759" stroke="#849bb0" stroke-dasharray="5 5"/>
+<line x1="104" x2="282" y1="125" y2="125" stroke="#2b4a68" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="193.0" y="120" text-anchor="middle" font-size="11">Envía credenciales</text>
+<line x1="282" x2="482" y1="151" y2="151" stroke="#2b4a68" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="382.0" y="146" text-anchor="middle" font-size="11">POST de inicio de sesión</text>
+<line x1="482" x2="681" y1="177" y2="177" stroke="#2b4a68" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="581.5" y="172" text-anchor="middle" font-size="11">Verifica identidad y rol</text>
+<line x1="681" x2="862" y1="203" y2="203" stroke="#2b4a68" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="771.5" y="198" text-anchor="middle" font-size="11">Consulta cuenta y guarda la sesión</text>
+<line x1="681" x2="482" y1="229" y2="229" stroke="#2b4a68" stroke-width="1.5" marker-end="url(#arrow)" stroke-dasharray="6 4"/>
+<text x="581.5" y="224" text-anchor="middle" font-size="11">Token o error</text>
+<line x1="482" x2="282" y1="255" y2="255" stroke="#2b4a68" stroke-width="1.5" marker-end="url(#arrow)" stroke-dasharray="6 4"/>
+<text x="382.0" y="250" text-anchor="middle" font-size="11">200 o rechazo 400/401</text>
+<line x1="104" x2="282" y1="326" y2="326" stroke="#2b4a68" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="193.0" y="321" text-anchor="middle" font-size="11">Abre Pagos y crea cobro</text>
+<line x1="282" x2="482" y1="352" y2="352" stroke="#2b4a68" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="382.0" y="347" text-anchor="middle" font-size="11">POST de cobro con sesión admin</text>
+<line x1="482" x2="862" y1="378" y2="378" stroke="#2b4a68" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="672.0" y="373" text-anchor="middle" font-size="11">Inserta pago PENDIENTE</text>
+<line x1="482" x2="282" y1="404" y2="404" stroke="#2b4a68" stroke-width="1.5" marker-end="url(#arrow)" stroke-dasharray="6 4"/>
+<text x="382.0" y="399" text-anchor="middle" font-size="11">201 o error de validación</text>
+<line x1="282" x2="482" y1="430" y2="430" stroke="#2b4a68" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="382.0" y="425" text-anchor="middle" font-size="11">Envía aprobación o rechazo</text>
+<line x1="482" x2="681" y1="456" y2="456" stroke="#2b4a68" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="581.5" y="451" text-anchor="middle" font-size="11">Aplica resultado</text>
+<line x1="681" x2="862" y1="482" y2="482" stroke="#2b4a68" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="771.5" y="477" text-anchor="middle" font-size="11">Pago y vigencia en una transacción</text>
+<line x1="681" x2="482" y1="508" y2="508" stroke="#2b4a68" stroke-width="1.5" marker-end="url(#arrow)" stroke-dasharray="6 4"/>
+<text x="581.5" y="503" text-anchor="middle" font-size="11">Estado guardado o error</text>
+<line x1="482" x2="282" y1="534" y2="534" stroke="#2b4a68" stroke-width="1.5" marker-end="url(#arrow)" stroke-dasharray="6 4"/>
+<text x="382.0" y="529" text-anchor="middle" font-size="11">Actualiza historial / muestra error</text>
+<line x1="104" x2="282" y1="605" y2="605" stroke="#2b4a68" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="193.0" y="600" text-anchor="middle" font-size="11">Solicita ingreso o salida</text>
+<line x1="282" x2="482" y1="631" y2="631" stroke="#2b4a68" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="382.0" y="626" text-anchor="middle" font-size="11">POST de acceso con sesión</text>
+<line x1="482" x2="681" y1="657" y2="657" stroke="#2b4a68" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="581.5" y="652" text-anchor="middle" font-size="11">Valida y registra solicitud</text>
+<line x1="681" x2="862" y1="683" y2="683" stroke="#2b4a68" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="771.5" y="678" text-anchor="middle" font-size="11">Consulta vigencia y cambia ocupación</text>
+<line x1="681" x2="482" y1="709" y2="709" stroke="#2b4a68" stroke-width="1.5" marker-end="url(#arrow)" stroke-dasharray="6 4"/>
+<text x="581.5" y="704" text-anchor="middle" font-size="11">Acceso registrado o rechazo</text>
+<line x1="482" x2="282" y1="735" y2="735" stroke="#2b4a68" stroke-width="1.5" marker-end="url(#arrow)" stroke-dasharray="6 4"/>
+<text x="382.0" y="730" text-anchor="middle" font-size="11">Confirma o muestra el motivo</text>
+</svg>

@@ -1,0 +1,6 @@
+Navegador: 158.0.4370.33 | PostgreSQL: 18.6 | Modo demo
+T01 OK | PENDIENTE · 50000 COP · vencimiento en -1 día.
+T02 OK | RECHAZADO · vencimiento en -1 día.
+T03 OK | APROBADO · mensualidad activa · vencimiento en 30 días.
+T04 OK | Reenvíos simultáneos HTTP 200/200 · una aprobación · misma fecha de aplicación y vencimiento.
+T05 OK | Consulta anónima HTTP 401 · operador HTTP 403 · historial y vencimiento conservados.

@@ -1,26 +1,42 @@
-﻿# Formato resumido de ejecución — Iteración 2
+# Pruebas de integración de la iteración 2
 
-Este resumen presenta 11 casos de prueba para Iteraciones 1 y 2. Registra responsable, fecha, resultado, evidencia y observaciones solo después de ejecutar cada escenario. No inventes resultados ni marques casos como aprobados sin una captura o registro verificable.
+**Fecha de ejecución** 22 de noviembre de 2026, hora de Colombia
 
-| Grupo | Escenarios que deben evidenciarse | Resultado actual |
-|---|---|---|
-| Autenticación | Inicio válido/inválido, cierre, sesión expirada/revocada | Pendiente de ejecución con la versión actual |
-| Roles | Administrador puede administrar cuentas/clientes/celdas; operador puede acceder a portería; rutas cruzadas responden 403; sesión ausente responde 401 | Pendiente de ejecución |
-| Cuentas | Crear administrador/operador, buscar/listar, usuario y cédula duplicados, rol requerido, hash nunca expuesto | Pendiente de ejecución |
-| Clientes y mensualidad | Alta, consulta, búsqueda, actualización, renovación, rechazo por vencimiento con fecha informada | Ejecutar o conservar evidencia previa del formato del profesor |
-| Celdas | Consultar 90 iniciales (80 carro/10 moto), búsqueda, alta/duplicado, detalle, edición y eliminación | Pendiente de ejecución |
-| Integridad de celdas | No editar ocupada; no eliminar ocupada/con historial; mantenimiento excluido de asignación; disponibilidad no reserva | Pendiente de ejecución |
-| Iteración 1 | Validación de placa, entrada con asignación aleatoria compatible, salida atómica, ocupación | Conservar evidencias históricas; reejecutar solo si la hoja oficial lo requiere |
+**Ejecución** Codex en el entorno local del proyecto
 
-## Registro complementario
+**Entorno** Express por HTTP y PostgreSQL 18.6 con un esquema temporal y datos ficticios
 
-| Escenario | Fecha | Responsable | Resultado | Evidencia | Observaciones |
-|---|---|---|---|---|---|
-| Autenticación y permisos |  |  | Pendiente |  |  |
-| Alta de cuentas y protección de credenciales |  |  | Pendiente |  |  |
-| Gestión de clientes/mensualidad |  |  | Pendiente |  |  |
-| CRUD y filtros de celdas |  |  | Pendiente |  |  |
-| Integridad, historial y concurrencia |  |  | Pendiente |  |  |
-| Flujo de entrada/salida integrado |  |  | Pendiente |  |  |
+**Resultado** 7 de 7 casos aprobados
 
-> No se reemplaza ni se modifican los estados ya diligenciados en la hoja oficial del profesor. Adjuntar capturas de ejecución y fecha al completar cada caso.
+Desde la raíz del repositorio, con las dependencias instaladas y PostgreSQL configurado en `.env`, ejecutar:
+
+```powershell
+node scripts/verificar_iteracion2.mjs
+```
+
+El usuario configurado en PostgreSQL necesita permiso para crear esquemas. El script compila TypeScript, carga el esquema físico, arranca el servidor, envía solicitudes HTTP y consulta las tablas para comprobar qué se guardó. Al terminar, elimina el esquema temporal.
+
+| Caso | Procedimiento y evidencia observada | Estado |
+| --- | --- | --- |
+| I2-B01 · Autenticación | Enviar datos vacíos, clave incorrecta y credenciales válidas. Se obtuvieron 400, 401 y 200. El hash del token quedó en PostgreSQL. Al cerrar sesión se obtuvo 204, se guardó la revocación y el mismo token devolvió 401. La sesión con vencimiento pasado también devolvió 401. | Aprobado |
+| I2-B02 · Cuentas | Crear administrador y operador, filtrar por usuario e intentar registrar rol inválido, usuario duplicado y cédula duplicada. Se verificaron hash con sal en PostgreSQL, ausencia de esos campos en la respuesta y ausencia de cuentas parciales. | Aprobado |
+| I2-B03 · Roles | Consultar cuentas, clientes y celdas. Sin sesión devolvieron 401 y con operador 403. El administrador pudo consultar los tres recursos y el operador pudo consultar ocupación. Se rechazó la creación de celdas desde el perfil operador. | Aprobado |
+| I2-B04 · Clientes y mensualidad | Matricular vehículo, editar nombre, intentar desactivar con clave incorrecta, desactivar con clave válida, intentar entrada con mensualidad vencida y renovar. Se comprobaron el nombre actualizado, el rechazo de entrada sin alta de acceso y el vencimiento renovado en 30 días. | Aprobado |
+| I2-B05 · Catálogo | Consultar 80 celdas de carro y 10 de moto, rechazar código inválido y exceso de capacidad, crear y rechazar el duplicado, editar y filtrar por código/tipo, consultar detalle y eliminar una celda sin historial. Se verificaron edición y borrado en PostgreSQL. | Aprobado |
+| I2-B06 · Ocupación y concurrencia | Poner una celda en mantenimiento y comprobar su exclusión. Consultar disponibilidad sin reservar, intentar una placa inválida y enviar dos entradas simultáneas de la misma placa. Se guardó una sola entrada con su actor. La celda asignada quedó ocupada y los intentos de editar, eliminar o cambiar su estado conservaron celda y acceso. | Aprobado |
+| I2-B07 · Salida e historial | Forzar un error de PostgreSQL al liberar la celda con una restricción temporal. La transacción conservó el acceso abierto y la celda ocupada. Al retirar la restricción, la salida guardó el actor y liberó la celda. El intento de eliminarla devolvió 409 y conservó su historial. | Aprobado |
+
+El rechazo al intentar cambiar el estado de una celda ocupada devolvió HTTP 500 en la implementación revisada. Se verificó la protección de los datos y se registró el código observado.
+
+```text
+Express por HTTP y PostgreSQL 18.6
+I2-B01 OK | login 400/401/200, sesión 204, revocación persistida y expiración 401
+I2-B02 OK | altas, búsqueda, credenciales derivadas y duplicados sin escrituras parciales
+I2-B03 OK | permisos 401/403 y acceso válido para ambos roles
+I2-B04 OK | matrícula, edición, contraseña de confirmación, vencimiento y renovación persistida
+I2-B05 OK | inventario, capacidad, formato, duplicidad, búsqueda, edición y borrado físico
+I2-B06 OK | mantenimiento, consulta sin reserva, placa inválida, concurrencia y protección de ocupación
+I2-B07 OK | reversión ante fallo de liberación, salida, actor e historial protegidos
+```
+
+Los 11 recorridos originales y su evidencia de interfaz se conservan en el plan práctico. Esta ejecución cubre las reglas del servidor y la persistencia en PostgreSQL.

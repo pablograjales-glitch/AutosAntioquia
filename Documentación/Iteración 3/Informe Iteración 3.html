@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><title>Autos Antioquia · Iteración 3</title>
+<style>
+@page{size:A4;margin:17mm}*{box-sizing:border-box}
+body{margin:0;color:#1b3340;font:10.6pt/1.46 Arial,sans-serif}
+h1,h2,h3{color:#123941;line-height:1.16}h1{font-size:39pt;margin:30px 0 10px}h2{font-size:23pt;margin:0 0 15px;padding-bottom:9px;border-bottom:2px solid #2b827d}h3{font-size:14pt;margin:18px 0 8px}p{margin:8px 0 12px}a{color:#09645f}table{width:100%;border-collapse:collapse;margin:9px 0 15px;font-size:9.3pt}td,th{border:1px solid #c3d6d7;padding:7px 8px;vertical-align:top;text-align:left}th{background:#e4f1ef}tr{break-inside:avoid}li{margin:5px 0}
+.cover{height:259mm;display:flex;flex-direction:column;justify-content:center;background:#10343c;color:#fff;padding:24mm;border-bottom:9mm solid #2b827d;break-after:page}.cover h1,.cover h2{color:#fff;border:0}.cover h2{font-size:23pt}.cover .fecha{margin-top:60px;color:#c6e7e6}.eyebrow{font-weight:bold;letter-spacing:1.3px;font-size:9pt}
+.page{break-after:page}.page:last-child{break-after:auto}.note{padding:9px 12px;background:#edf7f6;border-left:3px solid #2b827d}.diagram{width:100%;display:block;border:1px solid #c3d6d7;margin:13px 0}.sequence{max-height:169mm;object-fit:contain}.footer{margin-top:18px;border-top:1px solid #c3d6d7;padding-top:6px;color:#4d6970;font-size:9pt}
+.mock{border:1px solid #c3d6d7;background:#edf2f4;padding:13px;border-radius:6px}.mock section{padding:12px;margin:10px 0;background:#fff;border:1px solid #c3d6d7;border-radius:6px}.mock h4{margin:0}.mock b{display:inline-block;background:#0c6264;color:white;padding:5px 9px;border-radius:4px}.state{background:#e4f2f1;padding:4px 7px}.trace{font-size:9pt}
+</style></head><body>
+<section class="cover">
+<p class="eyebrow">PROYECTO ACADÉMICO · ITERACIÓN 3</p>
+<h1>Autos Antioquia</h1><h2>Gestión de pagos de mensualidad</h2>
+<p>Informe de entregables del sistema de información para parqueadero</p>
+<p class="fecha">22 de noviembre de 2026<br>Node.js · TypeScript · Express · PostgreSQL</p>
+</section>
+
+<section class="page">
+<h2>1. Introducción</h2>
+<p>Autos Antioquia apoya la operación de un parqueadero por mensualidad. La Iteración 1 desarrolló el registro de entradas y salidas, el control de la vigencia y la asignación de celdas. La Iteración 2 incorporó cuentas, roles y gestión de clientes y celdas. Esta iteración agrega el registro y seguimiento de pagos de mensualidad.</p>
+<p>El administrador inicia un cobro desde la ficha del cliente. El sistema registra la referencia, el monto, la moneda y el estado del pago. Una aprobación activa la mensualidad y suma 30 días desde el vencimiento vigente o desde la fecha actual si ya venció.</p>
+<div class="note"><strong>Alcance de la entrega.</strong> La gestión de pagos se demuestra en modo demo con clientes ficticios y una tarifa configurable de $50.000 COP. El conector ePayco Smart Checkout queda disponible para una verificación externa posterior.</div>
+<h3>Entregables de la actividad</h3>
+<table><tr><th>Actividad</th><th>Ubicación</th></tr>
+<tr><td>1. Requerimientos funcionales y no funcionales</td><td>Sección 2</td></tr>
+<tr><td>2. Casos de uso para StarUML</td><td>Sección 3 y CasosUsoGestionPagos.mdj</td></tr>
+<tr><td>3. Historias de usuario</td><td>Sección 3</td></tr>
+<tr><td>4. Mockups</td><td>Sección 4 y MockupPagos.html</td></tr>
+<tr><td>5. Secuencias de las tres iteraciones</td><td>Sección 5 y SecuenciasIteraciones1a3.mdj</td></tr>
+<tr><td>6. Componentes de las tres iteraciones</td><td>Sección 6 y ComponentesIteraciones1a3.mdj</td></tr>
+<tr><td>7. Plan de pruebas resumido</td><td>Sección 7 y Plan de pruebas.md</td></tr>
+<tr><td>8. Repositorio GitHub</td><td>Sección 8</td></tr></table>
+</section>
+
+<section class="page">
+<h2>2. Requerimientos</h2>
+<h3>Funcionales</h3>
+<table><tr><th>ID</th><th>Requerimiento y criterio de aceptación</th></tr>
+<tr><td>RF-P01</td><td>El administrador inicia un pago para un cliente existente. El servidor determina el importe en COP y crea una referencia única en estado PENDIENTE.</td></tr>
+<tr><td>RF-P02</td><td>El modo demo permite registrar una aprobación o un rechazo para un pago simulado pendiente.</td></tr>
+<tr><td>RF-P03 · Extensión</td><td>El conector ePayco abre Smart Checkout en pruebas. El servidor valida la firma de la confirmación y consulta la referencia con el proveedor antes de aplicar el resultado. La prueba con el proveedor queda pendiente.</td></tr>
+<tr><td>RF-P04</td><td>Un pago aprobado activa la mensualidad y suma 30 días desde la mayor fecha entre hoy y el vencimiento almacenado. Un pago pendiente o rechazado conserva el vencimiento.</td></tr>
+<tr><td>RF-P05</td><td>El administrador consulta los últimos 30 pagos del cliente y puede distinguir importe, estado y origen. La API conserva las referencias y las fechas de creación y aplicación.</td></tr>
+</table>
+<h3>No funcionales</h3>
+<table><tr><th>ID</th><th>Requerimiento y criterio de verificación</th></tr>
+<tr><td>RNF-P01</td><td>Control de acceso. Las rutas de gestión exigen una sesión con rol Administrador. Se esperan HTTP 401 sin sesión y 403 para el rol Operador.</td></tr>
+<tr><td>RNF-P02</td><td>Consistencia. El resultado y la renovación se guardan en una transacción PostgreSQL. Un reenvío simultáneo de la misma referencia conserva una sola renovación.</td></tr>
+<tr><td>RNF-P03</td><td>Configuración y privacidad. Las credenciales se mantienen en variables del servidor. El formulario del proveedor recoge los datos del pago y la base local registra los datos del cobro.</td></tr>
+<tr><td>RNF-P04</td><td>Usabilidad. El diálogo se abre desde Clientes y presenta los estados y el modo de pruebas con texto visible. Los mensajes de resultado se anuncian mediante una región de estado.</td></tr>
+<tr><td>RNF-P05</td><td>Continuidad. La instalación agrega la tabla de pagos mediante una migración versionada. La gestión de pagos reutiliza las cuentas, clientes y regla de renovación existentes.</td></tr>
+</table>
+</section>
+
+<section class="page">
+<h2>3. Historias y casos de uso</h2>
+<table><tr><th>ID</th><th>Historia y aceptación</th></tr>
+<tr><td>HU-P01</td><td>Como administrador quiero crear un pago para un cliente, para registrar su cobro de mensualidad. Debe aparecer como pendiente en el historial con la tarifa configurada. <span class="trace">RF-P01 · T01</span></td></tr>
+<tr><td>HU-P02</td><td>Como administrador quiero simular la aprobación o el rechazo, para demostrar el efecto del pago. La aprobación renueva una vez y el rechazo conserva la vigencia. <span class="trace">RF-P02, RF-P04 · T02–T04</span></td></tr>
+<tr><td>HU-P03 · Extensión</td><td>Como administrador quiero iniciar un checkout de ePayco en pruebas, para comprobar que el sistema aplica su confirmación. Debe validarse el cobro y una firma inválida debe rechazarse. <span class="trace">RF-P03, RF-P04 · T06–T07 pendientes</span></td></tr>
+<tr><td>HU-P04</td><td>Como administrador quiero consultar los pagos de un cliente, para identificar el resultado registrado. La vista muestra monto, estado y origen a un administrador autenticado. <span class="trace">RF-P05, RNF-P01 · T01–T05</span></td></tr>
+</table>
+<img src="CasosUsoGestionPagos.svg" alt="Casos de uso de administración y confirmación de pagos" class="diagram">
+<p>El administrador inicia pagos, revisa su historial y simula resultados en modo local. ePayco participa en la apertura de la sesión y la confirmación en sandbox. Ambos caminos registran el resultado mediante la misma regla de renovación.</p>
+</section>
+
+<section class="page">
+<h2>4. Mockups de gestión de pagos</h2>
+<p>El prototipo navegable se abre desde <strong>MockupPagos.html</strong>. Permite recorrer la apertura del diálogo, la creación del pago y sus resultados con datos ficticios.</p>
+<div class="mock">
+<section><h4>Clientes · HU-P01</h4><p>Cliente de prueba · Mensualidad <span class="state">Vencida</span></p><b>Pagos</b></section>
+<section><h4>Pagos de Cliente de prueba · HU-P01 y HU-P02</h4><p>$50.000 COP · Simulación local</p><b>Crear pago de prueba</b><p><span class="state">PENDIENTE</span> &nbsp; Simular aprobación &nbsp; Simular rechazo</p></section>
+<section><h4>Historial · HU-P04</h4><p>$50.000 COP · <span class="state">APROBADO</span> · demo</p><p>$50.000 COP · <span class="state">RECHAZADO</span> · demo</p></section>
+<section><h4>Checkout de prueba · HU-P03</h4><p>Como extensión, se prevé abrir el formulario alojado en ePayco y consultar el resultado en el historial de Autos Antioquia.</p></section>
+</div>
+<p class="note">La vista Clientes muestra el nuevo vencimiento tras una aprobación. Los pagos rechazados y pendientes permanecen visibles para distinguirlos de los aprobados.</p>
+</section>
+
+<section class="page">
+<h2>5. Secuencia integrada</h2>
+<p>El archivo <strong>SecuenciasIteraciones1a3.mdj</strong> reúne los diagramas editables en StarUML. Incluye entrada y salida (I1), inicio y cierre de sesión, matrícula, cuentas, mensualidades y celdas (I2), y gestión de pagos (I3).</p>
+<img src="SecuenciasIteraciones1a3.svg" alt="Secuencia integrada de portería, administración y gestión de pagos" class="diagram sequence">
+<p>Los diagramas muestran las respuestas a través de las rutas y controladores y separan los caminos de éxito y error. La aprobación en demo registra y renueva en una transacción. El rechazo conserva el vencimiento.</p>
+</section>
+
+<section class="page">
+<h2>6. Componentes integrados</h2>
+<p>La interfaz web se comunica con Express. El middleware controla sesión y rol para las acciones de portería, administración y pagos. Los controladores y servicios persisten los datos en PostgreSQL.</p>
+<img src="ComponentesIteraciones1a3.svg" alt="Interfaz, Express, servicios, PostgreSQL y ePayco" class="diagram">
+<table><tr><th>Iteración</th><th>Responsabilidades</th></tr>
+<tr><td>I1 · Portería</td><td>Vehículos, accesos, vigencia de mensualidad y celdas.</td></tr>
+<tr><td>I2 · Administración</td><td>Autenticación, roles, gestión de clientes, cuentas y celdas.</td></tr>
+<tr><td>I3 · Pagos</td><td>Diálogo e historial, rutas de cobro y webhook, validación y actualización transaccional, tabla pago_mensualidad y conexión con ePayco.</td></tr>
+</table>
+<p>La integración utiliza la API de sesiones de Smart Checkout y la confirmación servidor a servidor. <a href="https://epayco.com/desarrolladores/">Documentación de ePayco</a> · <a href="https://docs.davipay.com/docs/checkout-respuesta-y-confirmacion">Guía de confirmación</a>.</p>
+</section>
+
+<section class="page">
+<h2>7. Plan de pruebas resumido</h2>
+<p><strong>Entorno.</strong> Playwright, Microsoft Edge, Express y PostgreSQL 18.6 en un esquema temporal. La ejecución del 22 de noviembre de 2026 usó un cliente ficticio vencido, dos cuentas de prueba y una tarifa de $50.000 COP.</p>
+<table><tr><th>Caso</th><th>Acción y resultado esperado</th><th>Ejecución</th></tr>
+<tr><td>T01</td><td>Crear un pago. Debe registrarse pendiente por $50.000 y conservar el vencimiento.</td><td>Aprobado · demo</td></tr>
+<tr><td>T02</td><td>Simular rechazo. El historial debe mostrar RECHAZADO y la fecha debe conservarse.</td><td>Aprobado · demo</td></tr>
+<tr><td>T03</td><td>Aprobar otro cobro. Debe figurar APROBADO y extender el vencimiento 30 días.</td><td>Aprobado · demo</td></tr>
+<tr><td>T04</td><td>Enviar dos aprobaciones simultáneas para la misma referencia. El vencimiento debe conservar la primera renovación.</td><td>Aprobado · demo</td></tr>
+<tr><td>T05</td><td>Consultar sin sesión y confirmar como operador. El servidor debe responder 401 y 403, respectivamente.</td><td>Aprobado · demo</td></tr>
+<tr><td>T06</td><td>Completar el checkout de prueba y verificar el webhook y la renovación.</td><td>Pendiente · sandbox</td></tr>
+<tr><td>T07</td><td>Enviar una firma inválida. Se espera HTTP 400 y que se conserven el pago y la fecha.</td><td>Pendiente · sandbox</td></tr>
+</table>
+<p>El <a href="https://github.com/pablograjales-glitch/AutosAntioquia/blob/main/Documentaci%C3%B3n/Iteraci%C3%B3n%203/Plan%20de%20pruebas.md">plan de pruebas</a> enlaza capturas, resultados y el comando de reproducción de T01 a T05. T06 y T07 corresponden a la extensión ePayco.</p>
+
+<h2>8. Evidencias y conclusiones</h2>
+<p><strong>Repositorio.</strong> El código fuente y los entregables se consolidan en la rama principal de <a href="https://github.com/pablograjales-glitch/AutosAntioquia">pablograjales-glitch/AutosAntioquia</a>.</p>
+<p><strong>Video demostrativo.</strong> El recorrido de las tres iteraciones muestra portería, administración y pagos en una sola ejecución.</p>
+<p><strong>Conclusiones.</strong> La Iteración 3 incorpora un historial de pagos y conecta la aprobación con la vigencia que consulta portería. Las cinco pruebas en modo demo confirmaron el cambio de vencimiento, el rechazo, los permisos y el procesamiento único de aprobaciones repetidas. La comunicación con ePayco queda pendiente como extensión.</p>
+</section>
+</body></html>

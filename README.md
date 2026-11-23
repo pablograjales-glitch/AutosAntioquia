@@ -35,4 +35,14 @@ Para ejecutar solo los 11 casos sencillos incluidos en el informe, usa `npm run 
 - `database/schema.sql` y `database/migrations/`: modelo físico y actualizaciones.
 - `Documentación/`: entregables y diagramas.
 
-La capa de persistencia utiliza `pg.Pool` y SQL desde los servicios; el proyecto no implementa una capa Repository. El registro contable de pagos no está incluido en las iteraciones descritas.
+La capa de persistencia utiliza `pg.Pool` y SQL desde los servicios; el proyecto no implementa una capa Repository.
+
+## Iteración 3 · Pagos académicos
+
+1. Aplica `database/migrations/006_pagos.sql` después de las migraciones anteriores.
+2. Configura `PAGOS_MODO=demo` y, si deseas cambiar la tarifa ficticia, `PAGOS_MONTO_COP=50000`. Reinicia el servidor.
+3. Inicia sesión como administrador. En Clientes, abre **Pagos**, crea un pago de prueba y consulta el historial. El registro nace pendiente. Puedes simular aprobación o rechazo. Solo la aprobación renueva 30 días.
+
+Para usar el sandbox de ePayco, configura `PAGOS_MODO=epayco`, las cuatro variables `EPAYCO_*` del ejemplo y una URL pública HTTPS en `PAGOS_URL_PUBLICA`. Habilita el modo de pruebas en la cuenta del comercio. El checkout abre con `test: true` y la confirmación se recibe en `/api/pagos/epayco/confirmacion`. Al volver a Clientes, abre Pagos para consultar el estado registrado. Las credenciales se cargan desde el servidor y deben quedar en el entorno local.
+
+La entrega académica reúne el [informe PDF](Documentaci%C3%B3n/Iteraci%C3%B3n%203/Informe%20Iteraci%C3%B3n%203.pdf) y el [plan de pruebas con evidencias](Documentaci%C3%B3n/Iteraci%C3%B3n%203/Plan%20de%20pruebas.md). Las pruebas de la entrega se ejecutaron en modo demo. La verificación con ePayco queda como extensión.

@@ -397,6 +397,15 @@
       </div>
     </form>
   </dialog>
+  <dialog id="dialogo-pagos" class="confirm-dialog" aria-labelledby="titulo-pagos">
+    <h2 id="titulo-pagos">Pagos de mensualidad</h2>
+    <p id="pago-tarifa"></p>
+    <p id="pago-mensaje" role="status" aria-live="polite"></p>
+    <button id="pago-iniciar" type="button" class="admin-action success">Crear pago de prueba</button>
+    <ul id="pago-historial" aria-label="Últimos pagos"></ul>
+    <form method="dialog"><button class="admin-action">Cerrar</button></form>
+  </dialog>
+  <script src="pagos.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

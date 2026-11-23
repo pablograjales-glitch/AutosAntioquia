@@ -1,5 +1,6 @@
 import { pool } from '../config/db';
 import { ErrorHttp } from './authService';
+import { nuevoVencimiento } from './pagoService';
 
 const LIMITE_CELDAS: Record<'CARRO' | 'MOTO', number> = { CARRO: 80, MOTO: 10 };
 
@@ -49,7 +50,7 @@ export class GestionService {
     const { rows } = await pool.query(`
       UPDATE usuario
       SET mensualidad_activa = $2,
-          fecha_vencimiento_mensualidad = CASE WHEN $2 THEN GREATEST(fecha_vencimiento_mensualidad, CURRENT_DATE) + INTERVAL '30 days' ELSE fecha_vencimiento_mensualidad END
+          fecha_vencimiento_mensualidad = CASE WHEN $2 THEN ${nuevoVencimiento} ELSE fecha_vencimiento_mensualidad END
       WHERE cedula = $1
       RETURNING id_usuario, cedula, nombre, mensualidad_activa, fecha_vencimiento_mensualidad;
     `, [cedula, activa]);

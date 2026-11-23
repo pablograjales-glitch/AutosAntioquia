@@ -133,6 +133,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const agregarAccionMensualidad=(activar,texto)=>{const button=document.createElement('button');button.className=`admin-action ${activar?'success':'danger'}`;button.textContent=texto;button.addEventListener('click',()=>abrirConfirmacionRenovacion(cliente.cedula,activar));actions.appendChild(button);};
       if(!cliente.mensualidad_activa||vencida)agregarAccionMensualidad(true,'Renovar 30 días');
       if(cliente.mensualidad_activa)agregarAccionMensualidad(false,'Desactivar');
+      const pagos = document.createElement('button');
+      pagos.className = 'admin-action';
+      pagos.textContent = 'Pagos';
+      pagos.addEventListener('click', () => abrirPagos(cliente, apiFetch, actualizarAdministracion));
+      actions.appendChild(pagos);
       row.appendChild(actions);clientesBody.appendChild(row);
     });
   }

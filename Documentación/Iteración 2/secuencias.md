@@ -1,132 +1,261 @@
-# Diagramas de secuencia - Iteraciones 1 y 2
+﻿# Diagramas de secuencia de las iteraciones 1 y 2
 
-Estas secuencias siguen los permisos y operaciones implementados. Los archivos `.mdj` se pueden abrir y modificar en StarUML.
+El archivo [DiagramasSecuenciaI1-I2.mdj](DiagramasSecuenciaI1-I2.mdj) contiene las vistas editables para StarUML.
 
-## I1 - Registrar entrada
-
-```mermaid
-sequenceDiagram
-  actor P as Administrador u Operador
-  participant UI as Interfaz web
-  participant M as Middleware de autenticacion y rol
-  participant C as AccesoController
-  participant S as AccesoService
-  participant DB as PostgreSQL
-  P->>UI: Digita placa y tipo de vehiculo
-  UI->>M: POST /api/acceso/entrada con sesion
-  M->>M: Verifica sesion y rol ADMINISTRADOR u OPERADOR
-  M->>C: Autoriza solicitud
-  C->>S: registrarEntrada(placa, tipo, idCuenta)
-  S->>S: Normaliza y valida placa
-  S->>DB: BEGIN; consulta cliente, mensualidad y vencimiento
-  S->>DB: Comprueba que no exista entrada activa
-  S->>DB: Selecciona al azar una celda compatible disponible
-  S->>DB: Ocupa celda e inserta entrada con idCuenta
-  S->>DB: COMMIT
-  S-->>UI: Confirmacion y celda asignada
-  alt Validacion o persistencia falla
-    S->>DB: ROLLBACK
-    S-->>UI: Rechazo con motivo
-  end
-```
-
-## I1 - Registrar salida atomica
+## I2 · Iniciar sesión
 
 ```mermaid
 sequenceDiagram
-  actor P as Administrador u Operador
+  actor P as Administrador u operador
   participant UI as Interfaz web
-  participant M as Middleware de autenticacion y rol
-  participant C as AccesoController
-  participant S as AccesoService
-  participant DB as PostgreSQL
-  P->>UI: Digita placa
-  UI->>M: POST /api/acceso/salida con sesion
-  M->>M: Verifica sesion y rol ADMINISTRADOR u OPERADOR
-  M->>C: Autoriza solicitud
-  C->>S: registrarSalida(placa, idCuenta)
-  S->>DB: BEGIN; bloquea registro activo y celda
-  S->>DB: Cierra registro y guarda actor de salida
-  S->>DB: Libera la misma celda
-  alt Ambos cambios se completan
-    S->>DB: COMMIT
-    S-->>UI: Salida confirmada
-  else Falla el cierre o la liberacion
-    S->>DB: ROLLBACK de ambos cambios
-    S-->>UI: Error; registro y celda conservan su estado previo
-  end
-```
-
-## I2 - Matricular y gestionar mensualidades
-
-```mermaid
-sequenceDiagram
-  actor P as Administrador u Operador
-  participant UI as Interfaz web
-  participant M as Middleware de autenticacion y rol
-  participant C as AccesoController
-  participant S as GestionService
-  participant DB as PostgreSQL
-  P->>UI: Ingresa cedula, nombre, placa y tipo
-  UI->>M: POST /api/vehiculo con sesion
-  M->>M: Autoriza ADMINISTRADOR u OPERADOR
-  M->>C: Enruta matricula
-  C->>S: Registrar cliente/vehiculo/mensualidad con idCuenta
-  S->>DB: Busca cliente; crea ficha si no existe
-  S->>DB: Registra vehiculo y mensualidad inicial con vencimiento
-  S->>DB: Guarda idCuenta que realizo la matricula
-  S-->>UI: Matricula confirmada
-  actor A as Administrador
-  A->>UI: Consulta/edita cliente o renueva/desactiva mensualidad
-  UI->>M: PUT datos o PATCH mensualidad
-  M->>M: Autoriza ADMINISTRADOR
-  UI->>A: Solicita contrasena para renovar/desactivar
-  A->>UI: Confirma contrasena
-  UI->>C: Envia cambio confirmado
-  C->>S: Valida clave y persiste cambio/vencimiento
-  S-->>UI: Resultado de la gestion
-```
-
-## I2 - Gestionar cuentas y roles
-
-```mermaid
-sequenceDiagram
-  actor A as Administrador
-  participant UI as Interfaz web
-  participant M as Middleware de autenticacion y rol
   participant C as AuthController
   participant S as AuthService
   participant DB as PostgreSQL
-  A->>UI: Crea cuenta y elige Administrador u Operador
-  UI->>M: POST /api/usuarios con sesion
-  M->>M: Verifica rol ADMINISTRADOR
-  M->>C: Autoriza solicitud
-  C->>S: crearCuenta(datos)
-  S->>S: Valida datos y deriva hash con sal
-  S->>DB: Inserta cuenta y perfil (en transaccion)
-  S-->>UI: Cuenta creada; no expone hash ni sal
+  P->>UI: Ingresa usuario y contraseña
+  UI->>C: POST /api/auth/login
+  alt Faltan campos obligatorios
+    C-->>UI: 400 · Completar usuario y contraseña
+  else Solicitud completa
+    C->>S: iniciarSesion
+    S->>DB: Consulta cuenta activa y credenciales derivadas
+    DB-->>S: Cuenta y datos para verificar la clave
+    alt Credenciales válidas y sesión guardada
+      S->>DB: Guarda hash del token y vencimiento
+      DB-->>S: Confirma inserción
+      S-->>C: Token y datos de la cuenta
+      C-->>UI: 200 · Inicia sesión y muestra el panel
+    else Credenciales inválidas
+      S-->>C: Error de autenticación
+      C-->>UI: 401 · Muestra el error de acceso
+    else Falla la consulta o la escritura
+      S-->>C: Error de persistencia
+      C-->>UI: 500 · Error al iniciar sesión
+    end
+  end
 ```
 
-## I2 - Administrar celdas
+## I2 · Cerrar sesión
+
+```mermaid
+sequenceDiagram
+  actor P as Administrador u operador
+  participant UI as Interfaz web
+  participant M as Middleware de autenticación
+  participant C as AuthController
+  participant S as AuthService
+  participant DB as PostgreSQL
+  P->>UI: Selecciona Cerrar sesión
+  UI->>M: POST /api/auth/logout con Bearer
+  M->>S: validarToken, si está presente
+  S->>DB: Consulta el hash y la vigencia
+  DB-->>S: Resultado de la consulta
+  S-->>M: Cuenta autenticada o sesión inválida
+  alt Sesión ausente, vencida o revocada
+    M-->>UI: 401 · Sesión inválida
+  else Sesión vigente
+    M->>C: Entrega la identidad autenticada
+    C->>S: cerrarSesion con el hash
+    S->>DB: Actualiza revocada_en
+    alt Revocación guardada
+      DB-->>S: Confirma actualización
+      S-->>C: Revocación completada
+      C-->>UI: 204 · Sin contenido
+    else Falla la actualización
+      DB-->>S: Error de escritura
+      S-->>C: Propaga el error
+      C-->>UI: 500 · Express responde al error
+    end
+  end
+  UI-->>P: Limpia la sesión local y muestra el formulario de acceso
+```
+
+## I1 · Registrar entrada
+
+```mermaid
+sequenceDiagram
+  actor P as Administrador u operador
+  participant UI as Interfaz web
+  participant M as Middleware de autenticación y rol
+  participant C as AccesoController
+  participant S as AccesoService
+  participant DB as PostgreSQL
+  P->>UI: Digita placa y tipo de vehículo
+  UI->>M: POST /api/acceso/entrada
+  alt Solicitud sin sesión autorizada
+    M-->>UI: 401 o 403
+  else Solicitud autorizada
+    M->>C: Entrega los datos y la cuenta
+    C->>S: registrarEntrada
+    S->>DB: Inicia transacción y comprueba vehículo, mensualidad y acceso activo
+    alt Hay una celda compatible y se guarda el acceso
+      S->>DB: Ocupa la celda, guarda el acceso y confirma
+      S-->>C: Acceso y celda asignada
+      C-->>UI: 200 · Muestra autorización y celda
+    else Falla una regla o la escritura
+      S->>DB: Revierte la transacción
+      S-->>C: Error de entrada
+      C-->>UI: 400 o 500 · Muestra el motivo
+    end
+  end
+```
+
+## I1 · Registrar salida atómica
+
+```mermaid
+sequenceDiagram
+  actor P as Administrador u operador
+  participant UI as Interfaz web
+  participant M as Middleware de autenticación y rol
+  participant C as AccesoController
+  participant S as AccesoService
+  participant DB as PostgreSQL
+  P->>UI: Digita la placa
+  UI->>M: POST /api/acceso/salida
+  alt Solicitud sin sesión autorizada
+    M-->>UI: 401 o 403
+  else Solicitud autorizada
+    M->>C: Entrega la solicitud autenticada
+    C->>S: registrarSalida
+    S->>DB: Inicia transacción y busca acceso activo
+    alt Cierre y liberación completados
+      S->>DB: Guarda hora y actor, libera la celda y confirma
+      S-->>C: Salida y celda liberada
+      C-->>UI: 200 · Confirma la salida
+    else Acceso inexistente o falla de escritura
+      S->>DB: Revierte la transacción
+      S-->>C: Error de salida
+      C-->>UI: 400 · Muestra el motivo
+    end
+  end
+```
+
+## I2 · Matricular vehículo y cliente
+
+```mermaid
+sequenceDiagram
+  actor P as Administrador u operador
+  participant UI as Interfaz web
+  participant M as Middleware de autenticación y rol
+  participant C as AccesoController
+  participant S as AccesoService
+  participant DB as PostgreSQL
+  P->>UI: Ingresa cédula, nombre, placa y tipo
+  UI->>M: POST /api/vehiculo
+  alt Solicitud sin sesión autorizada
+    M-->>UI: 401 o 403
+  else Solicitud autorizada
+    M->>C: Entrega la solicitud autenticada
+    alt Datos obligatorios ausentes
+      C-->>UI: 400 · Solicita completar los datos
+    else Datos completos
+      C->>S: Registra matrícula y cuenta responsable
+      S->>DB: Inicia transacción y busca cliente
+      alt Matrícula registrada
+        S->>DB: Crea cliente si aplica, registra vehículo y confirma
+        S-->>C: Resultado de la matrícula
+        C-->>UI: 201 · Confirma la matrícula
+      else Registro rechazado
+        S->>DB: Revierte la transacción si se inició
+        S-->>C: Error de matrícula
+        C-->>UI: 400 · Muestra el motivo
+      end
+    end
+  end
+```
+
+## I2 · Renovar o desactivar mensualidad
 
 ```mermaid
 sequenceDiagram
   actor A as Administrador
   participant UI as Interfaz web
-  participant M as Middleware de autenticacion y rol
+  participant M as Middleware de autenticación y rol
+  participant C as AccesoController
+  participant AS as AuthService
+  participant GS as GestionService
+  participant DB as PostgreSQL
+  A->>UI: Selecciona la acción y confirma contraseña
+  UI->>M: PATCH /api/clientes/:cedula/mensualidad
+  alt Solicitud sin sesión autorizada
+    M-->>UI: 401 o 403
+  else Solicitud autorizada
+    M->>C: Entrega la solicitud autenticada
+    alt Solicitud incompleta
+      C-->>UI: 422 · Pide estado y contraseña
+    else Solicitud completa
+      C->>AS: verificarClaveAdministrador
+      AS->>DB: Lee hash y sal de la cuenta
+      AS-->>C: Contraseña válida o inválida
+      alt Contraseña válida
+        C->>GS: actualizarMensualidad
+        GS->>DB: Actualiza estado y fecha cuando corresponde
+        alt Cambio guardado
+          GS-->>C: Mensualidad actualizada
+          C-->>UI: 200 · Actualiza la ficha
+        else Falla el cambio
+          GS-->>C: Error de actualización
+          C-->>UI: 400 · Muestra el motivo
+        end
+      else Contraseña incorrecta
+        C-->>UI: 403 · Muestra error de confirmación
+      end
+    end
+  end
+```
+
+## I2 · Crear cuenta de acceso
+
+```mermaid
+sequenceDiagram
+  actor A as Administrador
+  participant UI as Interfaz web
+  participant M as Middleware de autenticación y rol
+  participant C as AuthController
+  participant S as AuthService
+  participant DB as PostgreSQL
+  A->>UI: Diligencia datos y elige el rol
+  UI->>M: POST /api/usuarios
+  alt Solicitud sin sesión autorizada
+    M-->>UI: 401 o 403
+  else Solicitud autorizada
+    M->>C: Entrega la solicitud autenticada
+    C->>S: crearCuenta si los campos obligatorios están completos
+    alt Datos válidos y cuenta guardada
+      S->>DB: Inserta cuenta y perfil de operador si aplica
+      S-->>C: Datos públicos de la cuenta
+      C-->>UI: 201 · Confirma la creación
+    else Validación, duplicidad o persistencia
+      S-->>C: Error del servicio, si se invocó
+      C-->>UI: 422, 409 o 500 · Muestra el motivo
+    end
+  end
+```
+
+## I2 · Administrar celdas
+
+```mermaid
+sequenceDiagram
+  actor A as Administrador
+  participant UI as Interfaz web
+  participant M as Middleware de autenticación y rol
   participant C as AccesoController
   participant S as GestionService
   participant DB as PostgreSQL
-  A->>UI: Consulta, crea, edita o cambia mantenimiento
-  UI->>M: Solicitud /api/celdas con sesion
-  M->>M: Verifica rol ADMINISTRADOR
-  M->>C: Autoriza solicitud
-  C->>S: Ejecuta operacion
-  S->>DB: Verifica codigo/tipo, limite 80 carros y 10 motos, ocupacion e historial
-  alt Operacion permitida
-    S->>DB: Persiste cambio
-    S-->>UI: Lista y contadores actualizados
-  else Se excede el limite o la celda esta ocupada/protegida
-    S-->>UI: Rechazo con motivo; no modifica datos
+  A->>UI: Consulta o modifica el catálogo
+  UI->>M: GET, POST, PUT, PATCH o DELETE /api/celdas
+  alt Solicitud sin sesión autorizada
+    M-->>UI: 401 o 403
+  else Solicitud autorizada
+    M->>C: Entrega la solicitud autenticada
+    C->>S: Ejecuta la operación si la solicitud es válida
+    S->>DB: Consulta catálogo o verifica capacidad, ocupación e historial
+    alt Consulta o cambio correcto
+      DB-->>S: Devuelve datos o confirma el cambio
+      S-->>C: Resultado de la operación
+      C-->>UI: 200, 201 o 204 · Muestra o refresca catálogo
+    else Datos inválidos, duplicado, capacidad, ocupación o historial
+      S-->>C: Error de la operación, si se invocó
+      C-->>UI: 422, 404, 409 o 500 según operación · Muestra el motivo
+    end
   end
 ```

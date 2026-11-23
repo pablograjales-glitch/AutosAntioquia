@@ -71,18 +71,14 @@ Actores: Administrador y Operador. Ambos pueden iniciar/cerrar sesión, matricul
 
 ## Pruebas
 
-Para esta entrega se resumen 11 casos de prueba seleccionados para los flujos de Iteraciones 1 y 2. Registra resultados, observaciones y responsables reales; no marques casos como aprobados sin ejecutar y adjuntar evidencia. Los grupos relevantes incluyen autenticación/sesiones, permisos 401/403, creación y duplicidad de cuentas, hash de clave, alta/búsqueda/edición/borrado protegido de celdas, concurrencia y protección de celdas ocupadas. Las pruebas de Iteración 1 ya registradas se conservan; no se inventan resultados.
+El plan práctico original documenta 11 recorridos de interfaz con respuestas simuladas. El [registro de ejecución complementario](Formato%20ejecuci%C3%B3n%20de%20pruebas.md) documenta siete casos aprobados contra Express y PostgreSQL, con comprobaciones de persistencia. Incluye el comando para repetir la ejecución y los resultados por caso.
 
-La tabla `Formato ejecución de pruebas.md` sirve como resumen complementario, no sustituye la hoja oficial. Completar fecha, responsable, resultado, evidencia y observaciones solo tras ejecutar cada caso.
+## Entregables
 
-## Entregables y pasos pendientes del equipo
-
-- Diagramas StarUML editables: casos de uso, secuencias de iteraciones 1 y 2, componentes.
-- Mockups: `mockups.html`.
-- Repositorio: https://github.com/pablograjales-glitch/AutosAntioquia (publicar cambios con commit/push desde la cuenta del equipo).
-- Video: grabar demostración de administrador y operador; subir a YouTube y pegar el enlace en el informe.
-- Ejecutar el plan del profesor y conservar evidencias reales.
+- [Secuencias editables de las iteraciones 1 y 2](DiagramasSecuenciaI1-I2.mdj), junto con los diagramas de casos de uso y componentes.
+- [Mockups](mockups.html) con inicio de sesión, alta y edición de celdas y sus validaciones.
+- Video demostrativo entregado, según confirmó el equipo.
 
 ## Conclusión
 
-Iteración 2 agrega control por perfiles, gestión de cuentas y administración integral de celdas mientras mantiene las funciones entregadas en Iteración 1. La autorización del lado del servidor limita cada operación al rol correspondiente; las reglas de integridad protegen mensualidades, historial y ocupación. Para cerrar la entrega académica se debe completar la ejecución documentada de los 11 casos resumidos. El repositorio está actualizado en GitHub y el enlace del video se comparte en el comentario de la actividad.
+La iteración 2 incorpora perfiles de acceso y administración de cuentas y celdas. Las pruebas de integración verificaron los permisos, la revocación de sesiones y las reglas que protegen la ocupación y el historial.

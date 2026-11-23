@@ -1,1 +1,45 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="900" height="430" viewBox="0 0 900 430"><rect width="900" height="430" fill="white"/><g fill="#eff6ff" stroke="#2563eb"><rect x="25" y="25" width="145" height="42" rx="6"/><rect x="205" y="25" width="145" height="42" rx="6"/><rect x="385" y="25" width="145" height="42" rx="6"/><rect x="565" y="25" width="145" height="42" rx="6"/><rect x="745" y="25" width="130" height="42" rx="6"/></g><g font-family="Arial" font-size="12" text-anchor="middle" fill="#172033"><text x="97" y="51">Operador</text><text x="277" y="51">Interfaz</text><text x="457" y="51">Controlador</text><text x="637" y="51">AccesoService</text><text x="810" y="51">PostgreSQL</text></g><g stroke="#94a3b8" stroke-dasharray="5 5"><path d="M97 68v300M277 68v300M457 68v300M637 68v300M810 68v300"/></g><g stroke="#334155" stroke-width="1.5" fill="none"><path d="M97 110h180M277 155h180M457 200h180M637 245h173M637 285h173M637 325h173"/></g><g font-family="Arial" font-size="12" fill="#172033"><text x="105" y="102">placa de salida</text><text x="285" y="147">POST /api/acceso/salida</text><text x="465" y="192">registrarSalida(placa)</text><text x="645" y="237">BEGIN + bloquear acceso/celda</text><text x="645" y="277">cerrar registro; liberar celda</text><text x="645" y="317">COMMIT si ambas escrituras ok</text></g><rect x="155" y="360" width="590" height="48" rx="6" fill="#fef2f2" stroke="#ef4444"/><text x="450" y="390" text-anchor="middle" font-family="Arial" font-size="13" fill="#7f1d1d">Si una escritura falla: ROLLBACK; se conserva el estado previo completo.</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="1700" height="852" viewBox="0 0 1700 852" role="img" aria-labelledby="titulo">
+  <title id="titulo">Secuencia de salida atómica</title>
+  <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#334155"/></marker></defs>
+  <style>
+    text{font:15px Arial,sans-serif;fill:#172033} .center{text-anchor:middle}
+    .heading{fill:#eff6ff;stroke:#2563eb} .frame{fill:none;stroke:#486a8f}
+    .guard{font-weight:bold;fill:#12315c} .lifeline,.separator{stroke:#94a3b8;stroke-dasharray:6 5}
+    .message{stroke:#334155;stroke-width:1.5;marker-end:url(#arrow)} .reply{stroke-dasharray:6 4}
+  </style>
+  <rect width="100%" height="100%" fill="white"/>
+  <rect x="40" y="25" width="220" height="45" rx="6" class="heading"/><text x="150" y="52" class="center">Administrador u operador</text>
+  <rect x="320" y="25" width="220" height="45" rx="6" class="heading"/><text x="430" y="52" class="center">Interfaz web</text>
+  <rect x="600" y="25" width="220" height="45" rx="6" class="heading"/><text x="710" y="52" class="center">Autenticación y rol</text>
+  <rect x="880" y="25" width="220" height="45" rx="6" class="heading"/><text x="990" y="52" class="center">AccesoController</text>
+  <rect x="1160" y="25" width="220" height="45" rx="6" class="heading"/><text x="1270" y="52" class="center">AccesoService</text>
+  <rect x="1440" y="25" width="220" height="45" rx="6" class="heading"/><text x="1550" y="52" class="center">PostgreSQL</text>
+  <path d="M150 70V837" class="lifeline"/>
+  <path d="M430 70V837" class="lifeline"/>
+  <path d="M710 70V837" class="lifeline"/>
+  <path d="M990 70V837" class="lifeline"/>
+  <path d="M1270 70V837" class="lifeline"/>
+  <path d="M1550 70V837" class="lifeline"/>
+  <rect x="37" y="446" width="1626" height="353" class="frame"/>
+  <text x="45" y="462" class="guard">alt</text>
+  <text x="46" y="489" class="guard">[Cierre y liberación completados]</text>
+  <path d="M37 637h1626" class="separator"/>
+  <text x="46" y="654" class="guard">[Acceso inexistente o falla de escritura]</text>
+  <rect x="22" y="180" width="1656" height="631" class="frame"/>
+  <text x="30" y="196" class="guard">alt</text>
+  <text x="31" y="223" class="guard">[Solicitud sin sesión autorizada]</text>
+  <path d="M22 283h1656" class="separator"/>
+  <text x="31" y="300" class="guard">[Solicitud autorizada]</text>
+  <line x1="150" x2="430" y1="110" y2="110" class="message"/><text x="290.0" y="101" class="center">Digita la placa</text>
+  <line x1="430" x2="710" y1="154" y2="154" class="message"/><text x="570.0" y="145" class="center">POST /api/acceso/salida</text>
+  <line x1="710" x2="430" y1="255" y2="255" class="message reply"/><text x="570.0" y="246" class="center">401 o 403</text>
+  <line x1="710" x2="990" y1="332" y2="332" class="message"/><text x="850.0" y="323" class="center">Entrega la solicitud autenticada</text>
+  <line x1="990" x2="1270" y1="376" y2="376" class="message"/><text x="1130.0" y="367" class="center">registrarSalida</text>
+  <line x1="1270" x2="1550" y1="420" y2="420" class="message"/><text x="1410.0" y="411" class="center">Inicia transacción y busca acceso activo</text>
+  <line x1="1270" x2="1550" y1="521" y2="521" class="message"/><text x="1410.0" y="512" class="center">Guarda hora y actor, libera la celda y confirma</text>
+  <line x1="1270" x2="990" y1="565" y2="565" class="message reply"/><text x="1130.0" y="556" class="center">Salida y celda liberada</text>
+  <line x1="990" x2="430" y1="609" y2="609" class="message reply"/><text x="710.0" y="600" class="center">200 · Confirma la salida</text>
+  <line x1="1270" x2="1550" y1="686" y2="686" class="message"/><text x="1410.0" y="677" class="center">Revierte la transacción</text>
+  <line x1="1270" x2="990" y1="730" y2="730" class="message reply"/><text x="1130.0" y="721" class="center">Error de salida</text>
+  <line x1="990" x2="430" y1="774" y2="774" class="message reply"/><text x="710.0" y="765" class="center">400 · Muestra el motivo</text>
+</svg>

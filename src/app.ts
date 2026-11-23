@@ -6,6 +6,7 @@ import { AccesoController } from './controllers/accesoControllers';
 import { AuthController } from './controllers/authController';
 import { autenticar, exigirRol } from './middleware/auth';
 import { pool } from './config/db';
+import { pagoRoutes } from './controllers/pagoRoutes';
 
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
@@ -15,6 +16,8 @@ const PORT = process.env.PORT || 3000;
 // Middlewares
 app.use(cors());
 app.use(express.json({ limit: '32kb' }));
+app.use('/api/pagos', pagoRoutes);
+app.post('/resultado-pago', (_req, res) => res.redirect(303, '/'));
 
 // Servir la carpeta public usando la ruta absoluta desde la raíz
 app.use(express.static(path.resolve(__dirname, '../public')));

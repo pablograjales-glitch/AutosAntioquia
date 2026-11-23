@@ -2,12 +2,90 @@
 <html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Mockups - Iteracion 2</title>
 <style>
 :root{font-family:Inter,Arial,sans-serif;color:#172033;background:#f3f6fb}*{box-sizing:border-box}body{margin:0}.top{background:#0f172a;color:#fff;padding:18px max(calc((100vw - 1160px)/2),24px);display:flex;justify-content:space-between}.wrap{max-width:1160px;margin:28px auto;padding:0 20px}.notice{background:#eff6ff;border:1px solid #bfdbfe;color:#1e3a8a;border-radius:10px;padding:14px 16px;margin-bottom:20px}.roles{display:flex;gap:8px;margin-bottom:20px}.tag{border-radius:20px;background:#e2e8f0;padding:8px 13px;font-weight:700}.tag.admin{background:#dbeafe;color:#1d4ed8}.tag.operator{background:#dcfce7;color:#166534}.panel{background:#fff;border:1px solid #dbe2ea;border-radius:12px;margin:0 0 22px;overflow:hidden;box-shadow:0 2px 8px #0f172a08}.head{padding:18px 22px;border-bottom:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center;gap:12px}.head h2{font-size:18px;margin:0}.body{padding:18px 22px}.stats{display:grid;grid-template-columns:repeat(4,minmax(120px,1fr));gap:12px}.stat{border:1px solid #e2e8f0;background:#f8fafc;border-radius:9px;padding:14px}.stat b{display:block;font-size:22px;margin:5px 0}.muted{color:#64748b;font-size:13px}.forms{display:grid;grid-template-columns:repeat(2,minmax(220px,1fr));gap:16px}.form{border:1px solid #e2e8f0;border-radius:9px;padding:16px}.form h3{margin:0 0 12px;font-size:15px}.field{display:block;font-size:13px;font-weight:700;margin:11px 0 5px}.input,select{width:100%;padding:10px 11px;border:1px solid #cbd5e1;border-radius:7px;background:white;color:#334155}.btn{border:0;border-radius:7px;padding:10px 14px;background:#2563eb;color:white;font-weight:700;margin-top:12px}.btn.gray{background:#e2e8f0;color:#334155}.btn.warn{background:#fef3c7;color:#92400e}.btn.green{background:#dcfce7;color:#166534}.toolbar{display:flex;gap:10px;align-items:center;padding:15px 22px;flex-wrap:wrap}.toolbar .input{max-width:360px}table{border-collapse:collapse;width:100%}th,td{text-align:left;padding:12px 15px;border-top:1px solid #e2e8f0;font-size:14px}th{font-size:11px;color:#64748b;background:#f8fafc}.pill{padding:5px 9px;border-radius:99px;background:#dcfce7;color:#166534;font-size:12px;font-weight:700}.pill.off{background:#fef3c7;color:#92400e}.pill.occ{background:#dbeafe;color:#1d4ed8}.pill.maint{background:#fee2e2;color:#b91c1c}.hint{font-size:13px;color:#475569;margin:0;line-height:1.5}.inline{display:flex;gap:9px;align-items:center}.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.cell{border:1px solid #cbd5e1;border-radius:8px;padding:12px}.cell b{display:block;margin-bottom:9px}.foot{color:#64748b;font-size:12px;margin:16px 2px}@media(max-width:720px){.stats{grid-template-columns:repeat(2,1fr)}.forms{grid-template-columns:1fr}.grid{grid-template-columns:repeat(2,1fr)}.head{align-items:flex-start;flex-direction:column}.toolbar{padding:14px}.toolbar .input{max-width:none}}
-</style></head><body><header class="top"><strong>Autos Colombia</strong><span>Sesiones individuales - Administrador y Operador</span></header><main class="wrap">
+.error{color:#991b1b;font-size:13px;margin:8px 0}.error-sample{background:#fef2f2;border-left:3px solid #dc2626;padding:12px}.table-scroll{overflow-x:auto}.btn:disabled{opacity:.55}
+</style></head><body><header class="top"><strong>Autos Antioquia</strong><span>Sesiones individuales - Administrador y Operador</span></header><main class="wrap">
+<section class="panel" aria-labelledby="titulo-login">
+  <div class="head"><h2 id="titulo-login">Iniciar sesión</h2></div>
+  <div class="body forms">
+    <form class="form" onsubmit="event.preventDefault(); document.getElementById('error-login').hidden = false">
+      <label class="field" for="usuario">Usuario</label>
+      <input class="input" id="usuario" maxlength="32" autocomplete="username" required>
+      <label class="field" for="clave">Contraseña</label>
+      <input class="input" id="clave" type="password" maxlength="128" autocomplete="current-password" required>
+      <p id="error-login" class="error" role="alert" hidden>Usuario o contraseña incorrectos.</p>
+      <button class="btn">Iniciar sesión</button>
+    </form>
+    <div class="form">
+      <h3>Estados de la pantalla</h3>
+      <p class="hint">Completa ambos campos para enviar el formulario. Este prototipo ilustra el rechazo de credenciales al enviarlo.</p>
+      <p class="error">Credenciales incorrectas · Usuario o contraseña incorrectos.</p>
+      <p class="error">Sesión vencida · Vuelve a iniciar sesión.</p>
+      <p class="hint">Cuando el acceso es correcto, se abre el panel del perfil. Cerrar sesión devuelve al formulario de acceso.</p>
+    </div>
+  </div>
+</section>
 <div class="notice"><b>Regla de operaci&oacute;n:</b> cada persona usa su propia cuenta. Administrador y operador matriculan clientes y atienden porter&iacute;a. Solo el administrador gestiona cuentas/celdas y renueva o desactiva mensualidades.</div>
 <div class="roles"><span class="tag admin">Vista compartida: porter&iacute;a</span><span class="tag operator">Acciones con trazabilidad individual</span></div>
 <section class="panel"><div class="head"><h2>Ocupaci&oacute;n actual</h2><span class="muted">Contadores visibles para ambos perfiles</span></div><div class="body stats"><div class="stat">Carros ocupados<b>1 / 80</b><span class="muted">79 disponibles o en mantenimiento</span></div><div class="stat">Motos ocupadas<b>1 / 10</b><span class="muted">9 disponibles o en mantenimiento</span></div><div class="stat">En porter&iacute;a<b>2</b><span class="muted">Veh&iacute;culos actualmente parqueados</span></div><div class="stat">Celdas fuera de servicio<b>2</b><span class="muted">Mantenimiento, no asignables</span></div></div></section>
 <section class="panel"><div class="head"><h2>Porter&iacute;a y matr&iacute;cula</h2><span class="muted">Administrador u operador, con su propia cuenta</span></div><div class="body forms"><div class="form"><h3>Matricular cliente y veh&iacute;culo</h3><p class="hint">Este flujo crea la ficha del cliente si a&uacute;n no existe y activa su mensualidad inicial.</p><label class="field">C&eacute;dula</label><input class="input" value="1000405766"><label class="field">Nombre completo</label><input class="input" value="Ana P&eacute;rez"><label class="field">Placa</label><input class="input" value="ABC123"><label class="field">Tipo de veh&iacute;culo</label><select><option>Carro</option><option>Moto</option></select><button class="btn">Registrar mensualidad</button></div><div class="form"><h3>Registrar entrada</h3><p class="hint">El sistema valida la mensualidad y asigna aleatoriamente una celda compatible disponible.</p><label class="field">Placa</label><div class="inline"><input class="input" value="ABC123"><button class="btn">Registrar entrada</button></div><p class="hint">Resultado: entrada registrada &rarr; celda C-14</p><hr><h3>Registrar salida</h3><label class="field">Placa</label><div class="inline"><input class="input" value="ABC123"><button class="btn gray">Registrar salida</button></div><p class="hint">La salida cierra el registro y libera la celda en una sola transacci&oacute;n.</p></div></div></section>
 <section class="panel"><div class="head"><h2>Gesti&oacute;n de clientes</h2><span class="tag admin">Solo administrador</span></div><div class="toolbar"><p class="hint">La ficha aparece al matricular el primer veh&iacute;culo. Aqu&iacute; se consultan o editan datos y se administran mensualidades.</p><input class="input" placeholder="Buscar por c&eacute;dula o nombre"></div><table><thead><tr><th>C&Eacute;DULA</th><th>NOMBRE</th><th>VEH&Iacute;CULOS</th><th>MENSUALIDAD</th><th>VENCE</th><th>ACCIONES</th></tr></thead><tbody><tr><td>1000405766</td><td>Ana P&eacute;rez</td><td>ABC123 &middot; Carro</td><td><span class="pill">Activa</span></td><td>15/12/2026</td><td><button class="btn gray">Editar nombre</button> <button class="btn warn">Renovar / desactivar</button></td></tr></tbody></table><div class="body"><p class="hint">Antes de renovar o desactivar, se solicita la contrase&ntilde;a del administrador, incluso si ya inici&oacute; sesi&oacute;n como administrador.</p><div class="form"><b>Confirmar cambio de mensualidad</b><label class="field">Contrase&ntilde;a de administrador</label><input class="input" type="password" placeholder="Contrase&ntilde;a actual"><button class="btn">Confirmar</button> <button class="btn gray">Cancelar</button></div></div></section>
-<section class="panel"><div class="head"><h2>Administraci&oacute;n de celdas</h2><span class="tag admin">Solo administrador</span></div><div class="toolbar"><p class="hint">Capacidad configurada: 80 carros y 10 motos. Ocupadas y mantenimiento no cuentan como disponibles.</p><input class="input" placeholder="Buscar c&oacute;digo o placa"><button class="btn">Crear celda</button></div><table><thead><tr><th>CELDA</th><th>TIPO</th><th>ESTADO</th><th>VEH&Iacute;CULO</th><th>ACCI&Oacute;N</th></tr></thead><tbody><tr><td>C-14</td><td>Carro</td><td><span class="pill occ">Ocupada</span></td><td>ABC123</td><td>Protegida mientras est&aacute; ocupada</td></tr><tr><td>C-15</td><td>Carro</td><td><span class="pill maint">Mantenimiento</span></td><td>-</td><td>Habilitar cuando est&aacute; disponible</td></tr><tr><td>M-02</td><td>Moto</td><td><span class="pill">Disponible</span></td><td>-</td><td>Marcar mantenimiento</td></tr></tbody></table></section>
+<section class="panel" aria-labelledby="titulo-celdas">
+  <div class="head"><h2 id="titulo-celdas">Administración de celdas</h2><span class="tag admin">Solo administrador</span></div>
+  <div class="toolbar"><p class="hint">Capacidad máxima de 80 carros y 10 motos.</p><input class="input" aria-label="Buscar código o placa" placeholder="Buscar código o placa"></div>
+  <div class="table-scroll"><table>
+    <thead><tr><th>CELDA</th><th>TIPO</th><th>ESTADO</th><th>VEHÍCULO</th><th>ACCIÓN</th></tr></thead>
+    <tbody>
+      <tr><td>C-14</td><td>Carro</td><td><span class="pill occ">Ocupada</span></td><td>ABC123</td><td>Registra la salida para habilitar cambios.</td></tr>
+      <tr><td>C-15</td><td>Carro</td><td><span class="pill maint">Mantenimiento</span></td><td>—</td><td>Marcar disponible</td></tr>
+      <tr><td>M-02</td><td>Moto</td><td><span class="pill">Disponible</span></td><td>—</td><td><a href="#editar-codigo">Editar M-02</a></td></tr>
+    </tbody>
+  </table></div>
+  <div class="body forms">
+    <form class="form" onsubmit="event.preventDefault(); document.getElementById('crear-error').hidden = false">
+      <h3>Crear celda</h3>
+      <label class="field" for="crear-codigo">Código de celda</label>
+      <input class="input" id="crear-codigo" value="" placeholder="Ej. C-81" required
+        maxlength="30" pattern="[A-Za-z0-9\-]{1,30}" aria-describedby="crear-ayuda">
+      <p class="hint" id="crear-ayuda">Hasta 30 caracteres. Usa letras, números y guiones.</p>
+      <label class="field" for="crear-tipo">Tipo de vehículo</label>
+      <select id="crear-tipo" required>
+        <option value="">Selecciona un tipo</option>
+        <option value="CARRO">Carro</option><option value="MOTO">Moto</option>
+      </select>
+      <p id="crear-error" class="error" role="alert" hidden>Ya existe una celda con ese código.</p>
+      <button class="btn">Crear celda</button>
+      <button class="btn gray" type="reset" onclick="document.getElementById('crear-error').hidden = true">Restablecer</button>
+    </form>
+    <form class="form" onsubmit="event.preventDefault(); document.getElementById('editar-error').hidden = false">
+      <h3>Editar celda M-02</h3>
+      <label class="field" for="editar-codigo">Código de celda</label>
+      <input class="input" id="editar-codigo" value="M-02" placeholder="Ej. C-81" required
+        maxlength="30" pattern="[A-Za-z0-9\-]{1,30}" aria-describedby="editar-ayuda">
+      <p class="hint" id="editar-ayuda">Hasta 30 caracteres. Usa letras, números y guiones.</p>
+      <label class="field" for="editar-tipo">Tipo de vehículo</label>
+      <select id="editar-tipo" required>
+        <option value="">Selecciona un tipo</option>
+        <option value="CARRO">Carro</option><option value="MOTO" selected>Moto</option>
+      </select>
+      <p id="editar-error" class="error" role="alert" hidden>No se puede cambiar el tipo de vehículo porque alcanzó su capacidad máxima.</p>
+      <button class="btn">Guardar cambios</button>
+      <button class="btn gray" type="reset" onclick="document.getElementById('editar-error').hidden = true">Restablecer</button>
+    </form>
+  </div>
+  <div class="body">
+    <div class="error-sample">
+      <h3>Mensajes de validación</h3>
+      <ul class="hint">
+        <li>Completa el código y el tipo de vehículo antes de guardar.</li>
+        <li>Corrige el código si contiene símbolos distintos del guion.</li>
+        <li>Ya existe una celda con ese código.</li>
+        <li>El tipo seleccionado alcanzó su capacidad máxima.</li>
+        <li>Registra la salida del vehículo antes de editar, eliminar o cambiar el estado de una celda ocupada.</li>
+        <li>La celda está asociada al historial de accesos y no se puede eliminar.</li>
+      </ul>
+      <p class="hint">Los formularios de este prototipo muestran ejemplos de rechazo al enviarse. Cuando se guarda correctamente, la lista refleja el código y tipo nuevos.</p>
+    </div>
+  </div>
+</section>
 <section class="panel"><div class="head"><h2>Administraci&oacute;n de cuentas</h2><span class="tag admin">Solo administrador</span></div><div class="body forms"><div class="form"><h3>Crear cuenta</h3><label class="field">Usuario de acceso</label><input class="input" placeholder="operador01"><label class="field">Nombre completo</label><input class="input" placeholder="Nombre y apellidos"><label class="field">Contrase&ntilde;a (8 a 128 caracteres)</label><input class="input" type="password"><label class="field">Perfil</label><select><option>Administrador</option><option>Operador</option></select><button class="btn">Crear cuenta</button></div><div class="form"><h3>Cuentas registradas</h3><p class="hint">El operador inicia sesi&oacute;n con su usuario y contrase&ntilde;a; no necesita usar la cuenta del administrador.</p><p>jpgr &middot; Administrador &middot; Activa</p><p>operador01 &middot; Operador &middot; Activa</p></div></div></section>
 <p class="foot">Prototipo de baja fidelidad. Los datos y resultados son ficticios. La disponibilidad del mockup es ilustrativa y no reserva celdas.</p></main></body></html>

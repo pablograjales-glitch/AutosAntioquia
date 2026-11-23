@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="es"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mockup de pagos · Autos Antioquia</title>
+<style>
+:root{font-family:system-ui,sans-serif;color:#172b38;background:#edf2f4}*{box-sizing:border-box}body{margin:0}header{background:#10343c;color:white;padding:22px max(20px,calc((100% - 900px)/2));white-space:nowrap}main{max-width:900px;margin:auto;padding:24px}h1,h2{margin:0 0 12px}p,li{line-height:1.5}.panel{background:white;padding:20px;border:1px solid #c9d6db;border-radius:9px;margin-bottom:16px}button{font:inherit;background:#0c6264;color:white;border:0;border-radius:5px;padding:8px 13px;margin:3px;cursor:pointer}button:disabled{opacity:.5;cursor:default}.tag{background:#e4f2f1;padding:5px 9px;border-radius:4px}.status{font-weight:650}ul{padding-left:20px}</style>
+<header><strong>Autos Antioquia</strong> · Administración</header>
+<main>
+<h1>Gestión de pagos</h1>
+<section class="panel"><h2>Clientes</h2><p>Cliente de prueba · Mensualidad <span id="vigencia" class="tag">Vencida</span></p><button id="abrir">Pagos</button></section>
+<section class="panel" id="panel" hidden>
+<h2>Pagos de Cliente de prueba</h2><p>$50.000 COP · Simulación local</p>
+<button id="crear">Crear pago de prueba</button>
+<ul id="historial"><li>Sin pagos registrados.</li></ul><p id="mensaje" class="status" role="status"></p>
+<button id="cerrar">Cerrar</button>
+</section>
+</main>
+<script>
+const porId = id => document.getElementById(id);
+const pagos = [];
+function mostrar() {
+  porId('historial').replaceChildren();
+  if (!pagos.length) {
+    const fila = document.createElement('li');
+    fila.textContent = 'Sin pagos registrados.';
+    porId('historial').append(fila);
+  }
+  for (const pago of pagos) {
+    const fila = document.createElement('li');
+    fila.textContent = '$50.000 COP · ' + pago.estado + ' ';
+    if (pago.estado === 'PENDIENTE') {
+      for (const [estado, etiqueta] of [['APROBADO','Simular aprobación'],['RECHAZADO','Simular rechazo']]) {
+        const boton = document.createElement('button');
+        boton.textContent = etiqueta;
+        boton.onclick = () => {
+          pago.estado = estado;
+          porId('mensaje').textContent = 'Resultado registrado: ' + estado;
+          if (estado === 'APROBADO') porId('vigencia').textContent = 'Activa · renovación de 30 días';
+          mostrar();
+        };
+        fila.append(boton);
+      }
+    }
+    porId('historial').append(fila);
+  }
+}
+porId('abrir').onclick = () => { porId('panel').hidden = false; porId('crear').focus(); };
+porId('cerrar').onclick = () => { porId('panel').hidden = true; porId('abrir').focus(); };
+porId('crear').onclick = () => {
+  pagos.unshift({estado:'PENDIENTE'});
+  porId('mensaje').textContent = 'Pago de prueba creado.';
+  mostrar();
+};
+if (new URLSearchParams(location.search).has('preview')) {
+  porId('abrir').click();
+  porId('crear').click();
+  porId('mensaje').textContent = '';
+}
+</script>
+</html>
